@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
+    tools:context=".activities.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
    <!-- <android.support.v4.view.ViewPager
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="mivadounou.projet2.uut.ucao.mivadounou.MainActivity">
+        tools:context="mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity">
 
         <FrameLayout
             android:id="@+id/content"

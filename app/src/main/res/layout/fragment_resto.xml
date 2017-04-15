@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_Restocontent"
-    tools:context="mivadounou.projet2.uut.ucao.mivadounou.RestoFragment"
+    tools:context="mivadounou.projet2.uut.ucao.mivadounou.fragments.RestoFragment"
     android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->

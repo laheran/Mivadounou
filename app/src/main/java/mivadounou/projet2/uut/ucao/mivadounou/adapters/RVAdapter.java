@@ -1,4 +1,4 @@
-package mivadounou.projet2.uut.ucao.mivadounou;
+package mivadounou.projet2.uut.ucao.mivadounou.adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import mivadounou.projet2.uut.ucao.mivadounou.entities.Person;
+import mivadounou.projet2.uut.ucao.mivadounou.R;
+
 /**
  * Created by LAHERAN on 05/04/2017.
  */
@@ -18,7 +21,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
 
     List<Person> persons;
 
-    RVAdapter(List<Person> persons){
+    public RVAdapter(List<Person> persons){
         this.persons = persons;
     }
 
@@ -31,8 +34,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
 
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
-        personViewHolder.personName.setText(persons.get(i).name);
-        personViewHolder.personPhoto.setImageResource(persons.get(i).photoId);
+        personViewHolder.personName.setText(persons.get(i).getName());
+        personViewHolder.personPhoto.setImageResource(persons.get(i).getPhotoId());
     }
 
     @Override

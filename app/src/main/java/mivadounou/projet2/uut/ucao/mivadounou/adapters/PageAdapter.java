@@ -1,8 +1,11 @@
-package mivadounou.projet2.uut.ucao.mivadounou;
+package mivadounou.projet2.uut.ucao.mivadounou.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.FfoodFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.RestoFragment;
 
 /**
  * Created by LAHERAN on 06/04/2017.

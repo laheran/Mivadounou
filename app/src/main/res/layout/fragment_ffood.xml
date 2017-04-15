@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_Ffoodcontent"
-    tools:context="mivadounou.projet2.uut.ucao.mivadounou.FfoodFragment"
+    tools:context="mivadounou.projet2.uut.ucao.mivadounou.fragments.FfoodFragment"
     android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->

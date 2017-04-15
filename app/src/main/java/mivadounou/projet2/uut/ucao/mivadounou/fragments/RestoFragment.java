@@ -1,20 +1,24 @@
-package mivadounou.projet2.uut.ucao.mivadounou;
-
+package mivadounou.projet2.uut.ucao.mivadounou.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class FfoodFragment extends Fragment {
+import mivadounou.projet2.uut.ucao.mivadounou.entities.Person;
+import mivadounou.projet2.uut.ucao.mivadounou.R;
+import mivadounou.projet2.uut.ucao.mivadounou.adapters.RVAdapter;
 
+
+public class RestoFragment extends Fragment {
 
     private static final String ARG_TEXT = "arg_text";
     private static final String ARG_COLOR = "arg_color";
@@ -28,7 +32,7 @@ public class FfoodFragment extends Fragment {
 
 
     public static Fragment newInstance(String text, int color) {
-        Fragment frag = new FfoodFragment();
+        Fragment frag = new RestoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TEXT, text);
         args.putInt(ARG_COLOR, color);
@@ -36,11 +40,25 @@ public class FfoodFragment extends Fragment {
         return frag;
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ffood, container, false);
+        // return inflater.inflate(R.layout.fragment_resto, container, false);
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_resto, container, false);
+        initializeData();
+
+        RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv);
+        rv.setHasFixedSize(true);
+        RVAdapter adapter = new RVAdapter(persons);
+        rv.setAdapter(adapter);
+
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        rv.setLayoutManager(llm);
+
+        return rootView;
     }
 
     @Override
@@ -58,7 +76,7 @@ public class FfoodFragment extends Fragment {
         }
 
         // initialize views
-        mContent = view.findViewById(R.id.fragment_Ffoodcontent);
+        mContent = view.findViewById(R.id.fragment_Restocontent);
         mTextView = (TextView) view.findViewById(R.id.text);
 
         // set text and background color
@@ -73,4 +91,15 @@ public class FfoodFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    private List<Person> persons;
+
+    // This method creates an ArrayList that has three Person objects
+// Checkout the project associated with this tutorial on Github if
+// you want to use the same images.
+    private void initializeData() {
+        persons = new ArrayList<>();
+        persons.add(new Person("Le Beluga", "23 years old", R.drawable.ic_beluga2));
+        persons.add(new Person("Le Patio", "25 years old", R.drawable.ic_patio));
+        persons.add(new Person("Hotel du Golf", "35 years old", R.drawable.ic_golf));
+    }
 }
