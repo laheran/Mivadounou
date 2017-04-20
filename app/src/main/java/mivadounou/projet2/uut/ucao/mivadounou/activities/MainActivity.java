@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.FfoodFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.MenuFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.RestoFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    /*private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity
             return false;
         }
 
-    };
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,28 +152,27 @@ public class MainActivity extends AppCompatActivity
         });*/
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(SELECTED_ITEM, mSelectedItem);
-        super.onSaveInstanceState(outState);
-    }
-
     private void selectFragment(MenuItem item) {
         Fragment frag = null;
         // init corresponding fragment
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                frag = RestoFragment.newInstance(getString(R.string.text_home),
+                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
                         getColorFromRes(R.color.color_home));
                 break;
+            case R.id.navigation_location:
+                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
+                        getColorFromRes(R.color.color_notifications));
+
+                break;
             case R.id.navigation_dashboard:
-                frag = FfoodFragment.newInstance(getString(R.string.text_notifications),
+                frag = MenuFragment.newInstance(getString(R.string.text_home),
+                        getColorFromRes(R.color.color_home));
+                break;
+            case R.id.navigation_notifications:
+                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
                         getColorFromRes(R.color.color_notifications));
                 break;
-            /*case R.id.navigation_notifications:
-                frag = MenuFragment.newInstance(getString(R.string.text_search),
-                        getColorFromRes(R.color.color_search));
-                break;*/
         }
 
         // update selected item
@@ -193,17 +193,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void updateToolbarText(CharSequence text) {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(text);
-        }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_ITEM, mSelectedItem);
+        super.onSaveInstanceState(outState);
     }
-
-    private int getColorFromRes(@ColorRes int resId) {
-        return ContextCompat.getColor(this, resId);
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -221,6 +215,19 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+
+
+    private void updateToolbarText(CharSequence text) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(text);
+        }
+    }
+
+    private int getColorFromRes(@ColorRes int resId) {
+        return ContextCompat.getColor(this, resId);
     }
 
     @Override

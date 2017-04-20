@@ -45,20 +45,7 @@ public class RestoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        // return inflater.inflate(R.layout.fragment_resto, container, false);
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_resto, container, false);
-        initializeData();
-
-        RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv);
-        rv.setHasFixedSize(true);
-        RVAdapter adapter = new RVAdapter(persons);
-        rv.setAdapter(adapter);
-
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        rv.setLayoutManager(llm);
-
-        return rootView;
+         return inflater.inflate(R.layout.fragment_resto, container, false);
     }
 
     @Override
@@ -77,7 +64,7 @@ public class RestoFragment extends Fragment {
 
         // initialize views
         mContent = view.findViewById(R.id.fragment_Restocontent);
-        mTextView = (TextView) view.findViewById(R.id.text);
+        mTextView = (TextView) view.findViewById(R.id.rv);
 
         // set text and background color
         mTextView.setText(mText);

@@ -11,12 +11,10 @@ import android.widget.TextView;
 
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FfoodFragment extends Fragment {
-
+public class MenuFragment extends Fragment {
 
     private static final String ARG_TEXT = "arg_text";
     private static final String ARG_COLOR = "arg_color";
@@ -27,10 +25,8 @@ public class FfoodFragment extends Fragment {
     private View mContent;
     private TextView mTextView;
 
-
-
     public static Fragment newInstance(String text, int color) {
-        Fragment frag = new FfoodFragment();
+        Fragment frag = new MenuFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TEXT, text);
         args.putInt(ARG_COLOR, color);
@@ -38,16 +34,18 @@ public class FfoodFragment extends Fragment {
         return frag;
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ffood, container, false);
+        return inflater.inflate(R.layout.fragment_menu, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
         // retrieve text and color from bundle or savedInstanceState
         if (savedInstanceState == null) {
@@ -60,24 +58,12 @@ public class FfoodFragment extends Fragment {
         }
 
         // initialize views
-        mContent = view.findViewById(R.id.fragment_Ffoodcontent);
-        mTextView = (TextView) view.findViewById(R.id.text);
+        mContent = view.findViewById(R.id.fragment_content);
+        mTextView = (TextView) view.findViewById(R.id.mfr);
 
         // set text and background color
         mTextView.setText(mText);
         mContent.setBackgroundColor(mColor);
-//        View rootView = inflater.inflate(R.layout.fragment_resto, container, false);
-//        initializeData();
-//
-//        RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv);
-//        rv.setHasFixedSize(true);
-//        RVAdapter adapter = new RVAdapter(persons);
-//        rv.setAdapter(adapter);
-//
-//        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-//        rv.setLayoutManager(llm);
-//
-//        return rootView;
     }
 
     @Override
