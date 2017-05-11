@@ -58,6 +58,7 @@ tools:context="mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:layout_alignParentBottom="true"
     android:background="?android:attr/windowBackground"
     app:menu="@menu/navigation" />
 

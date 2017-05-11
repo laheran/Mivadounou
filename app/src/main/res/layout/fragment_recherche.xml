@@ -1,0 +1,38 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mivadounou.projet2.uut.ucao.mivadounou.fragments.RechercheFragment">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_gravity="top"
+        android:background="#FFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:padding="5dp"
+        android:elevation="5dp"
+        android:layout_marginTop="10dp">
+
+        <SearchView
+
+            android:id="@+id/leftMenuSearch"
+            android:background="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:queryHint="Recherche..."
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:maxWidth="1000dp"/>
+
+
+    </LinearLayout>
+
+
+
+</FrameLayout>

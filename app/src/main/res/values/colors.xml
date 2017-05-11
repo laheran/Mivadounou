@@ -6,4 +6,6 @@
     <color name="back">#ECF0F1</color>
     <color name="color_home">#009688</color>
     <color name="color_notifications">#9C27B0</color>
+    <color name="back2">#f44336</color>
+
 </resources>

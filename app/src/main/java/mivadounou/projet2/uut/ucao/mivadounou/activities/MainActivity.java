@@ -1,6 +1,8 @@
 package mivadounou.projet2.uut.ucao.mivadounou.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -15,14 +17,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.FfoodFragment;
+import com.digits.sdk.android.AuthCallback;
+
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.AccueilFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.MenuFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.RestoFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.CommandeFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.DigitsFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.LocationFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.RechercheFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,54 +38,21 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationView mBottomNav;
     private int mSelectedItem;
     private static final String SELECTED_ITEM = "arg_selected_item";
-
-   /* private List<Person> persons;
-
-    // This method creates an ArrayList that has three Person objects
-// Checkout the project associated with this tutorial on Github if
-// you want to use the same images.
-    private void initializeData() {
-        persons = new ArrayList<>();
-        persons.add(new Person("Le Beluga", "23 years old", R.drawable.ic_beluga2));
-        persons.add(new Person("Le Patio", "25 years old", R.drawable.ic_patio));
-        persons.add(new Person("Hotel du Golf", "35 years old", R.drawable.ic_golf));
-    }*/
+    private AccueilFragment home = new AccueilFragment();
+    private AuthCallback authCallback;
 
 
-
-    /*private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText("Home");
-                    return true;
-                case R.id.navigation_location:
-                    Intent i = new Intent();
-                    startActivity(i);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText("dashbord");
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText("notification");
-                    return true;
-            }
-            return false;
-        }
-
-    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationViewHelper.removeShiftMode(mBottomNav);
         mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -96,14 +70,6 @@ public class MainActivity extends AppCompatActivity
         }
         selectFragment(selectedItem);
 
-
-
-
-        /*mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);*/
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -112,16 +78,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        //initializeData();
-
-       /* RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
-        rv.setHasFixedSize(true);
-        RVAdapter adapter = new RVAdapter(persons);
-        rv.setAdapter(adapter);
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        rv.setLayoutManager(llm);*/
 
         /*TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Restaurant"));
@@ -150,6 +106,35 @@ public class MainActivity extends AppCompatActivity
 
             }
         });*/
+
+        FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
+        fragment.replace(R.id.content, home);
+        fragment.commit();
+
+
+
+//        DigitsAuthButton digitsButton = (DigitsAuthButton) findViewById(R.id.auth_button);
+//        digitsButton.setCallback(((DigitsActivity.FabricAuth) getApplication()).getAuthCallback());
+//        AuthConfig.Builder authConfigBuilder = new AuthConfig.Builder()
+//                .withAuthCallBack(authCallback)
+//                .withPhoneNumber("+228");
+//
+//        Digits.authenticate(authConfigBuilder.build());
+
+
+        initi();
+    }
+
+    private void initi() {
+        SharedPreferences shared = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        editor = shared.edit();
+        editor.putString("splash","non");
+        editor.commit();
+
+
+        String valeur = shared.getString("splash", "rien");
+        Log.i("VALEUR DE LA PREF : ", "VALEUR :"+valeur);
     }
 
     private void selectFragment(MenuItem item) {
@@ -157,21 +142,28 @@ public class MainActivity extends AppCompatActivity
         // init corresponding fragment
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
-                        getColorFromRes(R.color.color_home));
+//                AccueilFragment home = new AccueilFragment();
+                FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
+                fragment.replace(R.id.content, home);
+                fragment.commit();
                 break;
             case R.id.navigation_location:
-                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
-                        getColorFromRes(R.color.color_notifications));
-
+                LocationFragment locate = new LocationFragment();
+                FragmentTransaction fragmentLocate = getSupportFragmentManager().beginTransaction();
+                fragmentLocate.replace(R.id.content, locate);
+                fragmentLocate.commit();
                 break;
-            case R.id.navigation_dashboard:
-                frag = MenuFragment.newInstance(getString(R.string.text_home),
-                        getColorFromRes(R.color.color_home));
+            case R.id.navigation_search:
+                RechercheFragment search = new RechercheFragment();
+                FragmentTransaction fragmentSearch = getSupportFragmentManager().beginTransaction();
+                fragmentSearch.replace(R.id.content, search);
+                fragmentSearch.commit();
                 break;
-            case R.id.navigation_notifications:
-                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
-                        getColorFromRes(R.color.color_notifications));
+            case R.id.navigation_cart:
+                CommandeFragment cart = new CommandeFragment();
+                FragmentTransaction fragmentCart = getSupportFragmentManager().beginTransaction();
+                fragmentCart.replace(R.id.content, cart);
+                fragmentCart.commit();
                 break;
         }
 
@@ -260,7 +252,14 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            DigitsFragment df = new DigitsFragment();
+            FragmentTransaction fragmentLocate = getSupportFragmentManager().beginTransaction();
+            fragmentLocate.replace(R.id.content, df);
+            fragmentLocate.commit();
+
         } else if (id == R.id.nav_gallery) {
+            Intent i = new Intent(this, DigitsActivity.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_slideshow) {
 
