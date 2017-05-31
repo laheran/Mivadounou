@@ -3,8 +3,13 @@ package mivadounou.projet2.uut.ucao.mivadounou.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,8 @@ import java.util.List;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.adapters.RVAdapter;
 import mivadounou.projet2.uut.ucao.mivadounou.entities.Person;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,9 +35,13 @@ public class AccueilFragment extends Fragment {
 // you want to use the same images.
     private void initializeData() {
         persons = new ArrayList<>();
-        persons.add(new Person("Le Beluga", "23 years old", R.drawable.ic_beluga2));
-        persons.add(new Person("Le Patio", "25 years old", R.drawable.ic_patio));
-        persons.add(new Person("Hotel du Golf", "35 years old", R.drawable.ic_golf));
+        persons.add(new Person("Les Noces","Avédji Limousine, non loin des feux tricolores - 11 BP 421\n" +
+                "Lomé - Togo ",R.drawable.noces));
+        persons.add(new Person("Yogi's Fast-Food", "YOGIS - Le vrai goût Américain. Pour tous les appétits, pour tous les budgets℠. " +
+                "La restauration rapide dans son sens réel. Rapide, abordable et savoureux bien sûr. ", R.drawable.yogi));
+        persons.add(new Person("Akif", "Restauration rapide, Libanaise, Méditerranéenne, Moyen-Orien", R.drawable.akif));
+        persons.add(new Person("BPC ( BURGER ET PIZZA CITY)", "Fast food Face Agence UTB, " +
+                "Adidogomé Avé-Maria - Adidogomé Lomé - Togo ", R.drawable.bpc));
     }
 
 
@@ -51,6 +62,7 @@ public class AccueilFragment extends Fragment {
         rv.setHasFixedSize(true);
         RVAdapter adapter = new RVAdapter(persons);
         rv.setAdapter(adapter);
+
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         rv.setLayoutManager(llm);

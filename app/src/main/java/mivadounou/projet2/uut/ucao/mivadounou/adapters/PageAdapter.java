@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.FfoodFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.RestoFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments_resto.Noces_details;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments_resto.Noces_menu;
 
 /**
  * Created by LAHERAN on 06/04/2017.
@@ -23,10 +23,10 @@ public class PageAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                RestoFragment tab1 = new RestoFragment();
+                Noces_menu tab1 = new Noces_menu();
                 return tab1;
             case 1:
-                FfoodFragment tab2 = new FfoodFragment();
+                Noces_details tab2 = new Noces_details();
                 return tab2;
             default:
                 return null;

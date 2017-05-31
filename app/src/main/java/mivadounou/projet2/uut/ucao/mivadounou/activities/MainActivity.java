@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     private static final String SELECTED_ITEM = "arg_selected_item";
     private AccueilFragment home = new AccueilFragment();
     private AuthCallback authCallback;
+    public Toolbar toolbar;
 
 
 
@@ -79,33 +80,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        /*TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Restaurant"));
-        tabLayout.addTab(tabLayout.newTab().setText("Fast-Food"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PageAdapter PAdapter = new PageAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
-
-        viewPager.setAdapter(PAdapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });*/
 
         FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
         fragment.replace(R.id.content, home);
