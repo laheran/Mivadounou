@@ -109,8 +109,6 @@ public class UserRestauFragment extends Fragment {
 
             case TAG_USER_RESTAU_HOME_FRAGMENT:
 
-                mBottomNav.setSelectedItemId(R.id.home_user_restau_menu);
-
                 if (oldFragment != null) {
                     getChildFragmentManager()
                             .beginTransaction()

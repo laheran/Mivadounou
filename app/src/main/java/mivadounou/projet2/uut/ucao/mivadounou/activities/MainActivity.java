@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.main_frame_container, new UserRestauFragment(), MainActivity.TAG_USER_RESTAU_FRAGMENT)
+                .add(R.id.main_frame_container, userRestauFragment, MainActivity.TAG_USER_RESTAU_FRAGMENT)
                 .commit();
 
         getSupportFragmentManager()
