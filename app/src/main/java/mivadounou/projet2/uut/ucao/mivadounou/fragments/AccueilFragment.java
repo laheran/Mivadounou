@@ -3,13 +3,8 @@ package mivadounou.projet2.uut.ucao.mivadounou.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +14,7 @@ import java.util.List;
 
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.adapters.RVAdapter;
-import mivadounou.projet2.uut.ucao.mivadounou.entities.Person;
-
-import static android.content.ContentValues.TAG;
+import mivadounou.projet2.uut.ucao.mivadounou.models.Person;
 
 /**
  * A simple {@link Fragment} subclass.

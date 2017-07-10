@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backin">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@color/backin"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/default_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_restaurant_black_24dp" />
+
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/avi"
+                    android:layout_centerInParent="true"
+                    style="@style/AVLoadingIndicatorView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:indicatorColor="@color/colorAccent"
+                    app:indicatorName="SemiCircleSpinIndicator" />
+            </RelativeLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_menu_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="120dp"
+                android:layout_marginTop="-23dp"
+                android:tint="@color/back"
+                app:srcCompat="@drawable/photocamera" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-33dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingRight="25dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="15dp"
+                    app:srcCompat="@drawable/ic_restaurant_menu_black_24dp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="@dimen/TextInputLayout_width_medium"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Nom du menu">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/menu_title_field"
+                        android:layout_width="@dimen/TextInputLayout_width_medium"
+                        android:layout_height="wrap_content"
+                        android:inputType="text|textMultiLine"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textSize="20dp" />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingRight="25dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="15dp"
+                    app:srcCompat="@drawable/ic_comment_speech_bubble" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="@dimen/TextInputLayout_width_medium"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Description du menu">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/menu_desc_field"
+                        android:layout_width="@dimen/TextInputLayout_width_medium"
+                        android:layout_height="wrap_content"
+                        android:inputType="text|textMultiLine"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textSize="20dp" />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingRight="25dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_price_tag" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="@dimen/TextInputLayout_width_medium"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Prix du menu">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/menu_price_field"
+                        android:layout_width="@dimen/TextInputLayout_width_medium"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textSize="20dp" />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Type de menu"
+                    android:textSize="20dp" />
+
+                <Spinner
+                    android:id="@+id/menu_type_field"
+                    android:layout_width="180dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:entries="@array/menuType"
+                    android:padding="5dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/button_new_menu"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Ajouter" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

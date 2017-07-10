@@ -7,10 +7,23 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_tab_resto">TabResto</string>
 
+    <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
+    <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
+    <string name="desc_phone_auth">Use a phone number to authenticate with Firebase.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Resto">Bienvenue Restaurant</string>
     <string name="Ffood">Bienvenue Fast-Food</string>
     <string name="text_home">Home Fragment</string>
     <string name="text_notifications">Notifications Fragment</string>
+    <string name="phoneAUthact">Connexion</string>
+    <string name="userRestauMenu">Menus du restau.</string>
+    <string name="userRestauTopMenu">Les Plus appréciés</string>
+
+    <array name="menuType">
+        <item>Plat Africain</item>
+        <item>Pizza</item>
+        <item>Burger</item>
+    </array>
 </resources>

@@ -1,4 +1,4 @@
-package mivadounou.projet2.uut.ucao.mivadounou.entities;
+package mivadounou.projet2.uut.ucao.mivadounou.models;
 
 import android.annotation.TargetApi;
 import android.content.Context;

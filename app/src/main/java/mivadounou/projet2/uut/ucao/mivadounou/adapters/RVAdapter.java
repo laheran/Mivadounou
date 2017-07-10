@@ -12,14 +12,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import mivadounou.projet2.uut.ucao.mivadounou.entities.Person;
+import mivadounou.projet2.uut.ucao.mivadounou.models.Person;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments_resto.Akif;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments_resto.Bpc;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments_resto.Noces;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.CommandeFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.LocationFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.RechercheFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments_resto.Yogi;
 
 /**

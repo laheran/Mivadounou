@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_user_restau_menu"
+        android:icon="@drawable/ic_restaurant_black_24dp"
+        android:title="Akif" />
+
+    <item
+        android:id="@+id/new_menu_user_restau_menu"
+        android:icon="@drawable/ic_note_add_black_24dp"
+        android:title="Créer Menu" />
+
+    <item
+        android:id="@+id/commande_user_restau_menu"
+        android:icon="@drawable/ic_assignment_black_24dp"
+        android:title="Commandes" />
+
+    <item
+        android:id="@+id/setting_user_restau_menu"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="Détails" />
+
+</menu>

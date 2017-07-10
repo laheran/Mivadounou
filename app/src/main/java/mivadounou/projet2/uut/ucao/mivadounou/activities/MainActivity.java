@@ -1,77 +1,130 @@
 package mivadounou.projet2.uut.ucao.mivadounou.activities;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.digits.sdk.android.AuthCallback;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.AccueilFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.CommandeFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.DigitsFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.LocationFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.RechercheFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.BottomNavFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.MenuFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.auth.ChooseAuthFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewMenuFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewRestauFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.user.UserRestauFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.models.Restau;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private TextView mTextMessage;
-    private BottomNavigationView mBottomNav;
-    private int mSelectedItem;
-    private static final String SELECTED_ITEM = "arg_selected_item";
-    private AccueilFragment home = new AccueilFragment();
-    private AuthCallback authCallback;
-    public Toolbar toolbar;
+    public static String TAG_BOTTOM_NAV_FRAGMENT = "TAG_BOTTOM_NAV_FRAGMENT";
+    public static String TAG_NEW_RESTAU_FRAGMENT = "TAG_NEW_RESTAU_FRAGMENT";
+    public static String TAG_NEW_MENU_FRAGMENT = "TAG_NEW_MENU_FRAGMENT";
+    public static String TAG_PHONE_AUTH_FRAGMENT = "TAG_PHONE_AUTH_FRAGMENT";
+    public static String TAG_USER_RESTAU_FRAGMENT = "TAG_USER_RESTAU_FRAGMENT";
+    public static String TAG_CHOOSE_AUTH_FRAGMENT = "TAG_CHOOSE_AUTH_FRAGMENT";
+    public static String TAG_EMAIL_PASSWORD_FRAGMENT = "TAG_EMAIL_PASSWORD_FRAGMENT";
+    public static String TAG_GOOGLE_SIGNIN_FRAGMENT = "TAG_GOOGLE_SIGNIN_FRAGMENT";
 
+    public static boolean isNewMenu = false;
+    public static Activity msActivity;
+    public static ProgressDialog mProgressDialog;
+    public BottomNavFragment bottomNavFragment;
+    public UserRestauFragment userRestauFragment;
+    public String oldTag = null;
 
+    private DrawerLayout drawer;
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
+    private SharedPreferences userSharedPreferences;
+
+    public static void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    public static void showProgressDialog() {
+        if (mProgressDialog != null && !mProgressDialog.isShowing()) {
+            mProgressDialog.show();
+        }
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static Dialog mDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.msActivity);
+
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setTitle(title);
+
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        return builder.create();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        msActivity = this;
+
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(false);
+
+        bottomNavFragment = new BottomNavFragment();
+        userRestauFragment = new UserRestauFragment();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        userSharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
-        BottomNavigationViewHelper.removeShiftMode(mBottomNav);
-        mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectFragment(item);
-                return true;
-            }
-        });
-
-        MenuItem selectedItem;
-        if (savedInstanceState != null) {
-            mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM, 0);
-            selectedItem = mBottomNav.getMenu().findItem(mSelectedItem);
-        } else {
-            selectedItem = mBottomNav.getMenu().getItem(0);
-        }
-        selectFragment(selectedItem);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -80,88 +133,111 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_frame_container, new UserRestauFragment(), MainActivity.TAG_USER_RESTAU_FRAGMENT)
+                .commit();
 
-        FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
-        fragment.replace(R.id.content, home);
-        fragment.commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_frame_container, bottomNavFragment, MainActivity.TAG_BOTTOM_NAV_FRAGMENT)
+                .commit();
 
+//        fragmentTransaction.commit();
 
-
-//        DigitsAuthButton digitsButton = (DigitsAuthButton) findViewById(R.id.auth_button);
-//        digitsButton.setCallback(((DigitsActivity.FabricAuth) getApplication()).getAuthCallback());
-//        AuthConfig.Builder authConfigBuilder = new AuthConfig.Builder()
-//                .withAuthCallBack(authCallback)
-//                .withPhoneNumber("+228");
-//
-//        Digits.authenticate(authConfigBuilder.build());
-
-
-        initi();
+        init();
     }
 
-    private void initi() {
+    public void findIfUserHasRestau() {
+
+        MainActivity.mProgressDialog.setMessage("Veillez Patientez ...");
+        MainActivity.showProgressDialog();
+
+        DatabaseReference userRestauRef = databaseReference.child("user-restaus").child(mAuth.getCurrentUser().getUid());
+
+        userRestauRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    String value = dataSnapshot.getValue().toString();
+                    String userRestauKey = value.substring(1, value.indexOf("="));
+
+                    userSharedPreferences.edit().putString(NewRestauFragment.RESTAU_KEY, userRestauKey).apply();
+                    userSharedPreferences.edit().putBoolean(NewRestauFragment.RESTAU_CREATED, true).apply();
+                    userSharedPreferences.edit().putBoolean(NewRestauFragment.FIRST_TIME_USER_RESTAU, false).apply();
+
+                    getRestauByKey(userRestauKey);
+
+                } else {
+
+                    MainActivity.hideProgressDialog();
+                    findWhereGo();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getRestauByKey(String key) {
+
+        DatabaseReference restauRef = databaseReference.child("restau").child(key);
+
+        restauRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Restau restau = dataSnapshot.getValue(Restau.class);
+
+                userSharedPreferences.edit().putString(NewRestauFragment.RESTAU_TITLE, restau.getTitle()).apply();
+
+                findWhereGo();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void findWhereGo() {
+
+        if (userSharedPreferences.getBoolean(NewRestauFragment.RESTAU_CREATED, false)) {
+
+            MainActivity.hideProgressDialog();
+
+            updateToolbarText(userSharedPreferences.getString(NewRestauFragment.RESTAU_TITLE, ""));
+
+            hideAndShow(MainActivity.TAG_USER_RESTAU_FRAGMENT, new UserRestauFragment());
+
+        } else {
+
+            updateToolbarText("Céer un Restaurant");
+
+            hideAndShow(MainActivity.TAG_NEW_RESTAU_FRAGMENT, new NewRestauFragment());
+
+        }
+    }
+
+    private void init() {
         SharedPreferences shared = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor;
         editor = shared.edit();
-        editor.putString("splash","non");
-        editor.commit();
-
+        editor.putString("splash", "non");
+        editor.apply();
 
         String valeur = shared.getString("splash", "rien");
-        Log.i("VALEUR DE LA PREF : ", "VALEUR :"+valeur);
-    }
-
-    private void selectFragment(MenuItem item) {
-        Fragment frag = null;
-        // init corresponding fragment
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
-//                AccueilFragment home = new AccueilFragment();
-                FragmentTransaction fragment = getSupportFragmentManager().beginTransaction();
-                fragment.replace(R.id.content, home);
-                fragment.commit();
-                break;
-            case R.id.navigation_location:
-                LocationFragment locate = new LocationFragment();
-                FragmentTransaction fragmentLocate = getSupportFragmentManager().beginTransaction();
-                fragmentLocate.replace(R.id.content, locate);
-                fragmentLocate.commit();
-                break;
-            case R.id.navigation_search:
-                RechercheFragment search = new RechercheFragment();
-                FragmentTransaction fragmentSearch = getSupportFragmentManager().beginTransaction();
-                fragmentSearch.replace(R.id.content, search);
-                fragmentSearch.commit();
-                break;
-            case R.id.navigation_cart:
-                CommandeFragment cart = new CommandeFragment();
-                FragmentTransaction fragmentCart = getSupportFragmentManager().beginTransaction();
-                fragmentCart.replace(R.id.content, cart);
-                fragmentCart.commit();
-                break;
-        }
-
-        // update selected item
-        mSelectedItem = item.getItemId();
-
-        // uncheck the other items.
-        for (int i = 0; i< mBottomNav.getMenu().size(); i++) {
-            MenuItem menuItem = mBottomNav.getMenu().getItem(i);
-            menuItem.setChecked(menuItem.getItemId() == item.getItemId());
-        }
-
-        updateToolbarText(item.getTitle());
-
-        if (frag != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.container, frag, frag.getTag());
-            ft.commit();
-        }
+        Log.i("VALEUR DE LA PREF : ", "VALEUR :" + valeur);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(SELECTED_ITEM, mSelectedItem);
         super.onSaveInstanceState(outState);
     }
 
@@ -174,18 +250,16 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
 
-        MenuItem homeItem = mBottomNav.getMenu().getItem(0);
-        if (mSelectedItem != homeItem.getItemId()) {
-            // select home item
-            selectFragment(homeItem);
-        } else {
-            super.onBackPressed();
-        }
+//        MenuItem homeItem = mBottomNav.getMenu().getItem(0);
+//        if (mSelectedItem != homeItem.getItemId()) {
+//            // select home item
+//            selectFragment(homeItem);
+//        } else {
+//            super.onBackPressed();
+//        }
     }
 
-
-
-    private void updateToolbarText(CharSequence text) {
+    public void updateToolbarText(CharSequence text) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(text);
@@ -208,45 +282,759 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (item.getItemId() == R.id.action_settings) {
+            Toast.makeText(this, "Setting Toast", Toast.LENGTH_LONG).show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public void hideAndShow(String tag, Fragment newFragment) {
+
+        if (tag.equals(MainActivity.TAG_BOTTOM_NAV_FRAGMENT)) {
+            if (newFragment != null) {
+
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_BOTTOM_NAV_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_BOTTOM_NAV_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+
+                return;
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_BOTTOM_NAV_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+            }
+
+            return;
+        }
+
+        if (tag.equals(MainActivity.TAG_NEW_RESTAU_FRAGMENT)) {
+            if (newFragment != null) {
+
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_NEW_RESTAU_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_NEW_RESTAU_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+
+                return;
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_NEW_RESTAU_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+            }
+
+            return;
+        }
+
+        if (tag.equals(MainActivity.TAG_NEW_MENU_FRAGMENT)) {
+
+            if (newFragment != null) {
+
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_NEW_MENU_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_NEW_MENU_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+                return;
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(bottomNavFragment)
+                        .commit();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_NEW_MENU_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+            }
+
+            return;
+        }
+
+        if (tag.equals(MainActivity.TAG_EMAIL_PASSWORD_FRAGMENT)) {
+
+            if (newFragment != null) {
+
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_EMAIL_PASSWORD_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_EMAIL_PASSWORD_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+                return;
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(bottomNavFragment)
+                        .commit();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_EMAIL_PASSWORD_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+            }
+
+            return;
+        }
+
+        if (tag.equals(MainActivity.TAG_GOOGLE_SIGNIN_FRAGMENT)) {
+
+            if (newFragment != null) {
+
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_GOOGLE_SIGNIN_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_GOOGLE_SIGNIN_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+                return;
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(bottomNavFragment)
+                        .commit();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_GOOGLE_SIGNIN_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+
+            }
+
+            return;
+        }
+
+        if (tag.equals(MainActivity.TAG_CHOOSE_AUTH_FRAGMENT)) {
+
+            if (newFragment != null) {
+
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_CHOOSE_AUTH_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_CHOOSE_AUTH_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+                return;
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(bottomNavFragment)
+                        .commit();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_CHOOSE_AUTH_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+            }
+
+            return;
+        }
+
+        if (tag.equals(MainActivity.TAG_PHONE_AUTH_FRAGMENT)) {
+
+            if (newFragment != null) {
+
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_PHONE_AUTH_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(userRestauFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_PHONE_AUTH_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+                return;
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(bottomNavFragment)
+                        .commit();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_PHONE_AUTH_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+            }
+
+            return;
+        }
+
+        if (tag.equals(MainActivity.TAG_USER_RESTAU_FRAGMENT)) {
+
+            if (newFragment != null) {
+                if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(getSupportFragmentManager().findFragmentByTag(tag))
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_USER_RESTAU_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    return;
+                } else {
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(bottomNavFragment)
+                            .commit();
+
+                    if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                            && !oldTag.equals(MainActivity.TAG_USER_RESTAU_FRAGMENT)) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                                .commit();
+                    }
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.main_frame_container, newFragment, tag)
+                            .commit();
+                }
+
+            } else {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .hide(bottomNavFragment)
+                        .commit();
+
+                if (oldTag != null && getSupportFragmentManager().findFragmentByTag(oldTag) != null
+                        && !oldTag.equals(MainActivity.TAG_USER_RESTAU_FRAGMENT)) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .hide(getSupportFragmentManager().findFragmentByTag(oldTag))
+                            .commit();
+                }
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .show(getSupportFragmentManager().findFragmentByTag(tag))
+                        .commit();
+            }
+        }
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-            DigitsFragment df = new DigitsFragment();
-            FragmentTransaction fragmentLocate = getSupportFragmentManager().beginTransaction();
-            fragmentLocate.replace(R.id.content, df);
-            fragmentLocate.commit();
+            case R.id.nav_camera:
 
-        } else if (id == R.id.nav_gallery) {
-            Intent i = new Intent(this, DigitsActivity.class);
-            startActivity(i);
+                updateToolbarText("Acceuill");
 
-        } else if (id == R.id.nav_slideshow) {
+                hideAndShow(MainActivity.TAG_BOTTOM_NAV_FRAGMENT, new BottomNavFragment());
 
-        } else if (id == R.id.nav_manage) {
+                break;
 
-        } else if (id == R.id.nav_share) {
+            case R.id.nav_gallery:
 
-        } else if (id == R.id.nav_send) {
+                mAuth = FirebaseAuth.getInstance();
 
+                if (mAuth.getCurrentUser() != null) {
+
+                    if (userSharedPreferences.getBoolean(NewRestauFragment.FIRST_TIME_USER_RESTAU, true)) {
+
+                        findIfUserHasRestau();
+
+                    } else {
+
+                        findWhereGo();
+
+                    }
+
+                } else {
+
+                    updateToolbarText("Authentification");
+
+                    oldTag = MainActivity.TAG_PHONE_AUTH_FRAGMENT;
+
+                    hideAndShow(MainActivity.TAG_PHONE_AUTH_FRAGMENT, new ChooseAuthFragment());
+                }
+
+                break;
+//            case R.id.nav_slideshow:
+//                break;
+//
+//            case R.id.nav_share:
+//                break;
+//
+//            case R.id.nav_send:
+//                break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        }, 40);
         return true;
     }
 }

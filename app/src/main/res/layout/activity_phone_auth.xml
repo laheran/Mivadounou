@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="20dp">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="8dp"
+                app:srcCompat="@drawable/phone_call" />
+
+            <TextView
+                android:id="@+id/country_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="3dp"
+                android:text="+228 (Togo)"
+                android:textColor="@color/white"
+                android:textSize="25dp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="20dp">
+
+            <LinearLayout
+                android:id="@+id/phone_view_group"
+                android:layout_width="300dp"
+                android:layout_height="65dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingRight="25dp">
+
+                <ImageView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@drawable/ic_call_black_24dp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="@dimen/TextInputLayout_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Numéro de tel.">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/field_phone_number"
+                        android:layout_width="@dimen/TextInputLayout_width"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textSize="20dp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/verification_view_group"
+                android:layout_width="300dp"
+                android:layout_height="65dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingRight="25dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@drawable/ic_smartphone" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="@dimen/TextInputLayout_width"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="10dp"
+                    android:hint="Code de verification">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/field_verification_code"
+                        android:layout_width="@dimen/TextInputLayout_width"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textSize="20dp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/button_start_verification"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="Authentification" />
+
+            <LinearLayout
+                android:id="@+id/others_button_view_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/button_verify_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Verification" />
+
+                <Button
+                    android:id="@+id/button_resend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="renvoie code" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>
+

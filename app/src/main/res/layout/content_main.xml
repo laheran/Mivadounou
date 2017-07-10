@@ -1,66 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   xmlns:app="http://schemas.android.com/apk/res-auto"
-   xmlns:tools="http://schemas.android.com/tools"
-   android:layout_width="match_parent"
-   android:layout_height="match_parent"
-   android:paddingBottom="@dimen/activity_vertical_margin"
-   android:paddingLeft="@dimen/activity_horizontal_margin"
-   android:paddingRight="@dimen/activity_horizontal_margin"
-   android:paddingTop="@dimen/activity_vertical_margin"
-   app:layout_behavior="@string/appbar_scrolling_view_behavior"
-   tools:context=".activities.MainActivity"
-   tools:showIn="@layout/app_bar_main">
-
- <android.support.v4.view.ViewPager
-       android:id="@+id/pager"
-       android:layout_width="match_parent"
-       android:layout_height="fill_parent"
-       android:layout_below="@id/tab_layout" />
-   <android.support.v7.widget.RecyclerView
-       android:id="@+id/rv"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent" />
-</RelativeLayout>
--->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/app_bar_main"
-android:id="@+id/container"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-tools:context="mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity">
-
-<FrameLayout
-    android:id="@+id/content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:background="#f1f1f1">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity"
+    tools:showIn="@layout/app_bar_main">
 
-
-    <!--<TextView
-        android:id="@+id/message"
+    <FrameLayout
+        android:id="@+id/main_frame_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="Home-content" />-->
-</FrameLayout>
-
-<android.support.design.widget.BottomNavigationView
-    android:id="@+id/navigation"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layout_alignParentBottom="true"
-    android:background="?android:attr/windowBackground"
-    app:menu="@menu/navigation" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/backin"/>
 
 </LinearLayout>

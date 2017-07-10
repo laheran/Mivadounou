@@ -1,4 +1,4 @@
-package mivadounou.projet2.uut.ucao.mivadounou.entities;
+package mivadounou.projet2.uut.ucao.mivadounou.models;
 
 /**
  * Created by LAHERAN on 05/04/2017.
