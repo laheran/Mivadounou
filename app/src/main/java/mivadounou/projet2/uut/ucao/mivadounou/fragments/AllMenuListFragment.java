@@ -1,6 +1,8 @@
-package mivadounou.projet2.uut.ucao.mivadounou.fragments.user;
+package mivadounou.projet2.uut.ucao.mivadounou.fragments;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -35,10 +37,15 @@ import com.google.firebase.storage.StorageReference;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewMenuFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.models.CommandeMenu;
 import mivadounou.projet2.uut.ucao.mivadounou.models.MenuRestau;
-import mivadounou.projet2.uut.ucao.mivadounou.viewholder.MenuRestauViewHolder;
+import mivadounou.projet2.uut.ucao.mivadounou.viewholder.AllMenuViewHolder;
 
-public abstract class RestauMenuListFragment extends Fragment {
+/**
+ * Created by leinad on 7/12/17.
+ */
+
+public abstract class AllMenuListFragment extends Fragment {
 
     private static final String TAG = "RestauMenuListFragment";
 
@@ -48,7 +55,7 @@ public abstract class RestauMenuListFragment extends Fragment {
 
     private StorageReference mStorage;
 
-    private FirebaseRecyclerAdapter<MenuRestau, MenuRestauViewHolder> mAdapter;
+    private FirebaseRecyclerAdapter<MenuRestau, AllMenuViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
 
@@ -56,7 +63,11 @@ public abstract class RestauMenuListFragment extends Fragment {
 
     protected Activity mActivity;
 
-    public RestauMenuListFragment() {
+    private SharedPreferences userSharedPreferences;
+
+    private FirebaseAuth mAuth;
+
+    public AllMenuListFragment() {
     }
 
     @Override
@@ -70,6 +81,8 @@ public abstract class RestauMenuListFragment extends Fragment {
         // [END create_database_reference]
 
         mStorage = FirebaseStorage.getInstance().getReference();
+
+        mAuth = FirebaseAuth.getInstance();
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
 
@@ -90,6 +103,8 @@ public abstract class RestauMenuListFragment extends Fragment {
         mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
         mRecycler.setHasFixedSize(true);
+
+        userSharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
@@ -125,16 +140,16 @@ public abstract class RestauMenuListFragment extends Fragment {
     protected void updateAdapter() {
         if (getUid() != null) {
             Query restauMenusQuery = getQuery(mDatabase);
-            mAdapter = new FirebaseRecyclerAdapter<MenuRestau, MenuRestauViewHolder>(MenuRestau.class,
-                    R.layout.item_restau_menu, MenuRestauViewHolder.class, restauMenusQuery) {
+            mAdapter = new FirebaseRecyclerAdapter<MenuRestau, AllMenuViewHolder>(MenuRestau.class,
+                    R.layout.item_all_menu, AllMenuViewHolder.class, restauMenusQuery) {
 
                 @Override
-                protected void populateViewHolder(final MenuRestauViewHolder menuRestauViewHolder, final MenuRestau menuRestau, int i) {
+                protected void populateViewHolder(final AllMenuViewHolder allMenuViewHolder, final MenuRestau menuRestau, int i) {
                     final DatabaseReference menuRestauRef = getRef(i);
 
                     final String menuRestauKey = menuRestauRef.getKey();
 
-                    menuRestauViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    allMenuViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             toDetails(menuRestauKey, menuRestau);
@@ -142,24 +157,24 @@ public abstract class RestauMenuListFragment extends Fragment {
                     });
 
                     if (menuRestau.stars.containsKey(getUid())) {
-                        menuRestauViewHolder.getStarView().setImageResource(R.drawable.ic_star_black_24dp);
+                        allMenuViewHolder.getStarView().setImageResource(R.drawable.ic_star_black_24dp);
                     } else {
-                        menuRestauViewHolder.getStarView().setImageResource(R.drawable.ic_star_border_black_24dp);
+                        allMenuViewHolder.getStarView().setImageResource(R.drawable.ic_star_border_black_24dp);
                     }
 
                     switch (menuRestau.getType()) {
                         case "Plat Africain":
-                            menuRestauViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_restaurant);
+                            allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_restaurant);
                             break;
                         case "Pizza":
-                            menuRestauViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_pie);
+                            allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_pie);
                             break;
                         case "Burger":
-                            menuRestauViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_fast_food);
+                            allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_fast_food);
                             break;
                     }
 
-                    menuRestauViewHolder.startAnim();
+                    allMenuViewHolder.startAnim();
 
                     StorageReference imageRef = mStorage.child("images").child("menu").child(menuRestauKey);
 
@@ -173,7 +188,7 @@ public abstract class RestauMenuListFragment extends Fragment {
                                 public boolean onException(Exception e, StorageReference ref,
                                                            Target<GlideDrawable> target,
                                                            boolean isFirstResource) {
-                                    menuRestauViewHolder.stopAnim();
+                                    allMenuViewHolder.stopAnim();
                                     return false;
                                 }
 
@@ -182,13 +197,13 @@ public abstract class RestauMenuListFragment extends Fragment {
                                                                StorageReference ref, Target<GlideDrawable> target,
                                                                boolean isFromMemoryCache,
                                                                boolean isFirstResource) {
-                                    menuRestauViewHolder.stopAnim();
+                                    allMenuViewHolder.stopAnim();
                                     return false;
                                 }
                             })
-                            .into(menuRestauViewHolder.getMenuImageView());
+                            .into(allMenuViewHolder.getMenuImageView());
 
-                    menuRestauViewHolder.bindToPost(menuRestau, new View.OnClickListener() {
+                    allMenuViewHolder.bindToPost(menuRestau, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             DatabaseReference globalmenuRestauRef = mDatabase.child("menu").child(menuRestauKey);
@@ -198,6 +213,26 @@ public abstract class RestauMenuListFragment extends Fragment {
                             onStarClicked(globalmenuRestauRef);
                             onStarClicked(restauMenuRef);
                         }
+                    }, new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                            CommandeMenu commandeMenu = new CommandeMenu(
+                                    menuRestau.getTitle(),
+                                    menuRestau.getType(),
+                                    menuRestauKey,
+                                    menuRestau.getPrice(),
+                                    currentUser.getDisplayName().isEmpty() ? currentUser.getPhoneNumber() : currentUser.getDisplayName(),
+                                    currentUser.getUid(),
+                                    menuRestau.getRestauName(),
+                                    menuRestau.getRestauId()
+                            );
+
+                            showDialog(commandeMenu);
+                        }
                     });
                 }
             };
@@ -206,6 +241,15 @@ public abstract class RestauMenuListFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    void showDialog(CommandeMenu commandeMenu) {
+
+        CommandeDialogFragment commandeDialogFragment = CommandeDialogFragment
+                .newInstance(commandeMenu);
+
+        commandeDialogFragment.setCancelable(false);
+        commandeDialogFragment.show(getFragmentManager(), "Commande");
     }
 
     protected void toDetails(String menuRestauKey, MenuRestau menuRestau) {
@@ -223,10 +267,10 @@ public abstract class RestauMenuListFragment extends Fragment {
 
         MainActivity.isNewMenu = true;
 
-        if (getParentFragment().getParentFragment() instanceof UserRestauFragment) {
-
-            ((UserRestauFragment) getParentFragment().getParentFragment()).toDetail(newMenuFragment);
-        }
+//        if (getParentFragment().getParentFragment() instanceof UserRestauFragment) {
+//
+//            ((UserRestauFragment) getParentFragment().getParentFragment()).toDetail(newMenuFragment);
+//        }
     }
 
     // [START post_stars_transaction]
@@ -288,5 +332,4 @@ public abstract class RestauMenuListFragment extends Fragment {
     }
 
     public abstract Query getQuery(DatabaseReference databaseReference);
-
 }

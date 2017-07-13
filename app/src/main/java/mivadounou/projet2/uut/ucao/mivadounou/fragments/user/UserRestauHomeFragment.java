@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +39,6 @@ public class UserRestauHomeFragment extends Fragment {
     private FragmentPagerAdapter mPagerAdapter;
 
     private ViewPager mViewPager;
-
-    private FloatingActionButton floatingActionButton;
 
     private Activity mActivity;
 
@@ -70,8 +70,6 @@ public class UserRestauHomeFragment extends Fragment {
         mViewPager = (ViewPager) viewRoot.findViewById(R.id.container);
         tabLayout = (TabLayout) viewRoot.findViewById(R.id.tabs);
 
-//        floatingActionButton = (FloatingActionButton) viewRoot.findViewById(R.id.fab_new_post);
-
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new UserRestauMenusFragment());
         fragments.add(new UserRestauTopMenusFragment());
@@ -84,20 +82,7 @@ public class UserRestauHomeFragment extends Fragment {
 
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
-//        // Button launches NewPostActivity
-//        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                MainActivity.isNewMenu = true;
-//
-//                if (mActivity instanceof MainActivity) {
-//
-//                    ((MainActivity) mActivity).hideAndShow(MainActivity.TAG_NEW_MENU_FRAGMENT, new NewMenuFragment());
-//
-//                }
-//            }
-//        });
+
         return viewRoot;
     }
 

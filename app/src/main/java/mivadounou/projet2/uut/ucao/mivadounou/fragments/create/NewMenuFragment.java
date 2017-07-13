@@ -39,7 +39,6 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.ByteArrayOutputStream;
@@ -69,8 +68,6 @@ public class NewMenuFragment extends Fragment {
     private DatabaseReference mDatabase;
 
     private FloatingActionButton floatingActionButton;
-
-    private CropImageView cropImageView;
 
     private ImageView imageView;
 
@@ -123,7 +120,6 @@ public class NewMenuFragment extends Fragment {
 
         mStorage = FirebaseStorage.getInstance().getReference();
 
-        cropImageView = (CropImageView) rootView.findViewById(R.id.cropImageView);
         imageView = (ImageView) rootView.findViewById(R.id.default_img);
         menuTitleText = (EditText) rootView.findViewById(R.id.menu_title_field);
         menuDescText = (EditText) rootView.findViewById(R.id.menu_desc_field);
@@ -353,7 +349,7 @@ public class NewMenuFragment extends Fragment {
                                                     Toast.makeText(mActivity, "Menu modifié !", Toast.LENGTH_LONG).show();
                                                 }
 
-                                                if(getParentFragment() instanceof UserRestauFragment){
+                                                if (getParentFragment() instanceof UserRestauFragment) {
 
                                                     ((UserRestauFragment) getParentFragment()).hideAndShow(UserRestauFragment.TAG_USER_RESTAU_HOME_FRAGMENT);
                                                 }
@@ -401,7 +397,7 @@ public class NewMenuFragment extends Fragment {
                                     Toast.makeText(mActivity, "Menu modifié !", Toast.LENGTH_LONG).show();
                                 }
 
-                                if(getParentFragment() instanceof UserRestauFragment){
+                                if (getParentFragment() instanceof UserRestauFragment) {
 
                                     ((UserRestauFragment) getParentFragment()).hideAndShow(UserRestauFragment.TAG_USER_RESTAU_HOME_FRAGMENT);
                                 }

@@ -4,7 +4,7 @@
     <item
         android:id="@+id/home_user_restau_menu"
         android:icon="@drawable/ic_restaurant_black_24dp"
-        android:title="Akif" />
+        android:title="Mon Restau." />
 
     <item
         android:id="@+id/new_menu_user_restau_menu"

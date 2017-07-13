@@ -33,11 +33,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.BottomNavFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.MenuFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.auth.ChooseAuthFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewMenuFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewRestauFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.user.UserRestauFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.models.Restau;
@@ -109,6 +109,10 @@ public class MainActivity extends AppCompatActivity
 
         msActivity = this;
 
+        getFragmentManager();
+        Calendar calendar = Calendar.getInstance();
+//        Toast.makeText(msActivity, "" + calendar.getTimeInMillis(), Toast.LENGTH_SHORT).show();
+
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
 
@@ -142,8 +146,6 @@ public class MainActivity extends AppCompatActivity
                 .beginTransaction()
                 .add(R.id.main_frame_container, bottomNavFragment, MainActivity.TAG_BOTTOM_NAV_FRAGMENT)
                 .commit();
-
-//        fragmentTransaction.commit();
 
         init();
     }

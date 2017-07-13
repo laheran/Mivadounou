@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.user.UserRestauFragment;
@@ -256,6 +258,24 @@ public class NewRestauFragment extends Fragment {
 
                                 MainActivity.mDialog("", "Le Restaurant a bien été crée mais l'image associer n'a pas pu être envoiyer").show();
 
+                                final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE);
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        sweetAlertDialog
+                                                .setTitleText(restau.getTitle())
+                                                .setContentText("Le Restaurant a bien été crée mais l'image associer n'a pas pu être envoiyer")
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.hide();
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                }, 50);
+
 
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -270,8 +290,23 @@ public class NewRestauFragment extends Fragment {
 
                                 ((MainActivity) mActivity).hideAndShow(MainActivity.TAG_USER_RESTAU_FRAGMENT, new UserRestauFragment());
 
-                                Toast.makeText(mActivity, "Nouveau restaurant crée !", Toast.LENGTH_LONG).show();
+                                final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE);
 
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        sweetAlertDialog
+                                                .setTitleText(restau.getTitle())
+                                                .setContentText("Le Restaurant a été crée avec succès !")
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.hide();
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                }, 50);
                             }
                         });
                     }

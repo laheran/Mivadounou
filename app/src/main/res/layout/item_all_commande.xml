@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backin"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/menu_icon_type"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@drawable/ic_restaurant_menu_black_24dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vouz avez commander"
+                    android:textSize="@dimen/textview_commande" />
+
+                <TextView
+                    android:id="@+id/commande_text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Riz Gras a la Tomate | Akif"
+                    android:textSize="@dimen/textview_commande" />
+
+                <TextView
+                    android:id="@+id/commande_text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quantité : 3, Prix unitaire : 200 FCAF"
+                    android:textSize="@dimen/textview_commande" />
+
+                <TextView
+                    android:id="@+id/commande_text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Prix Total : 600 FCAF"
+                    android:textSize="@dimen/textview_commande" />
+
+                <TextView
+                    android:id="@+id/commande_text4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pour la 23, July, 2013 à 13h30"
+                    android:textSize="@dimen/textview_commande" />
+
+                <TextView
+                    android:id="@+id/commande_text5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Il y a 5 min" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/backin"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/send_commande"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/starTint"
+                android:padding="0dp"
+                android:text="Annuler"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
