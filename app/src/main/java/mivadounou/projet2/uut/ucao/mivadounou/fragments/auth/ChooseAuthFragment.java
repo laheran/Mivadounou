@@ -101,7 +101,7 @@ public class ChooseAuthFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                ((MainActivity) mActivity).oldTag = MainActivity.TAG_CHOOSE_AUTH_FRAGMENT;
+                ((MainActivity) mActivity).oldTag = TAGS[position];
 
                 ((MainActivity) mActivity).hideAndShow(TAGS[position], FRAGMENTS[position]);
             }
