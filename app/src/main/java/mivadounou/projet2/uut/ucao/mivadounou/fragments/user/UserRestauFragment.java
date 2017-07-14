@@ -1,7 +1,9 @@
 package mivadounou.projet2.uut.ucao.mivadounou.fragments.user;
 
-import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,17 +11,24 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.activities.BottomNavigationViewHelper;
+import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewMenuFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewRestauFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,15 +50,21 @@ public class UserRestauFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private Activity mActivity;
-
     private ActionBar actionBar;
 
     private BottomNavigationView mBottomNav;
 
     private UserRestauHomeFragment userRestauHomeFragment = new UserRestauHomeFragment();
 
+    private UserRestauCommandeFragment userRestauCommandeFragment = new UserRestauCommandeFragment();
+
     private Fragment oldFragment;
+
+    private SharedPreferences userSharedPreferences;
+
+    private DatabaseReference databaseReference;
+
+    static final int FINISHED_NOTIFICATION_ID = 1;
 
     public UserRestauFragment() {
         // Required empty public constructor
@@ -72,6 +87,7 @@ public class UserRestauFragment extends Fragment {
                              Bundle savedInstanceState) {
         View viewRoot = inflater.inflate(R.layout.fragment_user_restau, container, false);
 
+
         mBottomNav = (BottomNavigationView) viewRoot.findViewById(R.id.user_restau_navigation);
         BottomNavigationViewHelper.removeShiftMode(mBottomNav);
         mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -90,9 +106,59 @@ public class UserRestauFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
-        mActivity = getActivity();
-
         actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+        userSharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+//        DatabaseReference restauCommandeRef = databaseReference.child("restau-commandes")
+//                .child(userSharedPreferences.getString(NewRestauFragment.RESTAU_KEY, ""));
+
+//        restauCommandeRef.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                Intent intent = new Intent(getActivity(), MainActivity.class);
+//
+//
+//                PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0 /* requestCode */, intent,
+//                        PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//                NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity())
+//                        .setSmallIcon(R.drawable.ic_restaurant_black_24dp)
+//                        .setContentTitle(getString(R.string.app_name))
+//                        .setContentText("Nouvelle commande reçu !")
+//                        .setAutoCancel(true)
+//                        .setContentIntent(pendingIntent);
+//
+//
+//                MainActivity.notificationManager.notify(FINISHED_NOTIFICATION_ID, builder.build());
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
+        getChildFragmentManager()
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(R.id.user_restau_container, userRestauCommandeFragment, TAG_USER_RESTAU_COMMANDE_FRAGMENT)
+                .commit();
 
         getChildFragmentManager()
                 .beginTransaction()
@@ -118,6 +184,11 @@ public class UserRestauFragment extends Fragment {
 
                 getChildFragmentManager()
                         .beginTransaction()
+                        .hide(userRestauCommandeFragment)
+                        .commit();
+
+                getChildFragmentManager()
+                        .beginTransaction()
                         .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .show(userRestauHomeFragment)
                         .commit();
@@ -125,6 +196,11 @@ public class UserRestauFragment extends Fragment {
                 break;
 
             case TAG_USER_RESTAU_NEW_MENU_FRAGMENT:
+
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauCommandeFragment)
+                        .commit();
 
                 getChildFragmentManager()
                         .beginTransaction()
@@ -149,6 +225,24 @@ public class UserRestauFragment extends Fragment {
                 break;
 
             case TAG_USER_RESTAU_COMMANDE_FRAGMENT:
+
+                if (oldFragment != null) {
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .hide(oldFragment)
+                            .commit();
+                }
+
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .hide(userRestauHomeFragment)
+                        .commit();
+
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .show(userRestauCommandeFragment)
+                        .commit();
 
                 break;
 
@@ -198,7 +292,7 @@ public class UserRestauFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.home_user_restau_menu:
 
-                updateToolbarText(item.getTitle());
+                updateToolbarText(userSharedPreferences.getString(NewRestauFragment.RESTAU_TITLE, ""));
 
                 hideAndShow(TAG_USER_RESTAU_HOME_FRAGMENT);
 
@@ -215,6 +309,8 @@ public class UserRestauFragment extends Fragment {
             case R.id.commande_user_restau_menu:
 
                 updateToolbarText(item.getTitle());
+
+                hideAndShow(TAG_USER_RESTAU_COMMANDE_FRAGMENT);
 
                 break;
 

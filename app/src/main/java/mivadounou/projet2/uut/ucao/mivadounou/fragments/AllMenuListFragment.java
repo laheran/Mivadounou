@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -138,109 +139,107 @@ public abstract class AllMenuListFragment extends Fragment {
     }
 
     protected void updateAdapter() {
-        if (getUid() != null) {
-            Query restauMenusQuery = getQuery(mDatabase);
-            mAdapter = new FirebaseRecyclerAdapter<MenuRestau, AllMenuViewHolder>(MenuRestau.class,
-                    R.layout.item_all_menu, AllMenuViewHolder.class, restauMenusQuery) {
+        Query restauMenusQuery = getQuery(mDatabase);
+        mAdapter = new FirebaseRecyclerAdapter<MenuRestau, AllMenuViewHolder>(MenuRestau.class,
+                R.layout.item_all_menu, AllMenuViewHolder.class, restauMenusQuery) {
 
-                @Override
-                protected void populateViewHolder(final AllMenuViewHolder allMenuViewHolder, final MenuRestau menuRestau, int i) {
-                    final DatabaseReference menuRestauRef = getRef(i);
+            @Override
+            protected void populateViewHolder(final AllMenuViewHolder allMenuViewHolder, final MenuRestau menuRestau, int i) {
+                final DatabaseReference menuRestauRef = getRef(i);
 
-                    final String menuRestauKey = menuRestauRef.getKey();
+                final String menuRestauKey = menuRestauRef.getKey();
 
-                    allMenuViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            toDetails(menuRestauKey, menuRestau);
-                        }
-                    });
-
-                    if (menuRestau.stars.containsKey(getUid())) {
-                        allMenuViewHolder.getStarView().setImageResource(R.drawable.ic_star_black_24dp);
-                    } else {
-                        allMenuViewHolder.getStarView().setImageResource(R.drawable.ic_star_border_black_24dp);
+                allMenuViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        toDetails(menuRestauKey, menuRestau);
                     }
+                });
 
-                    switch (menuRestau.getType()) {
-                        case "Plat Africain":
-                            allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_restaurant);
-                            break;
-                        case "Pizza":
-                            allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_pie);
-                            break;
-                        case "Burger":
-                            allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_fast_food);
-                            break;
-                    }
-
-                    allMenuViewHolder.startAnim();
-
-                    StorageReference imageRef = mStorage.child("images").child("menu").child(menuRestauKey);
-
-                    Glide.with(mActivity)
-                            .using(new FirebaseImageLoader())
-                            .load(imageRef)
-                            .crossFade()
-                            .signature(new StringSignature(menuRestau.getMd5Hash()))
-                            .listener(new RequestListener<StorageReference, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, StorageReference ref,
-                                                           Target<GlideDrawable> target,
-                                                           boolean isFirstResource) {
-                                    allMenuViewHolder.stopAnim();
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource,
-                                                               StorageReference ref, Target<GlideDrawable> target,
-                                                               boolean isFromMemoryCache,
-                                                               boolean isFirstResource) {
-                                    allMenuViewHolder.stopAnim();
-                                    return false;
-                                }
-                            })
-                            .into(allMenuViewHolder.getMenuImageView());
-
-                    allMenuViewHolder.bindToPost(menuRestau, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DatabaseReference globalmenuRestauRef = mDatabase.child("menu").child(menuRestauKey);
-                            DatabaseReference restauMenuRef = mDatabase.child("restau-menus").child(menuRestau.getRestauId()).child(menuRestauKey);
-
-                            // Run two transactions
-                            onStarClicked(globalmenuRestauRef);
-                            onStarClicked(restauMenuRef);
-                        }
-                    }, new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-
-                            FirebaseUser currentUser = mAuth.getCurrentUser();
-
-                            CommandeMenu commandeMenu = new CommandeMenu(
-                                    menuRestau.getTitle(),
-                                    menuRestau.getType(),
-                                    menuRestauKey,
-                                    menuRestau.getPrice(),
-                                    currentUser.getDisplayName().isEmpty() ? currentUser.getPhoneNumber() : currentUser.getDisplayName(),
-                                    currentUser.getUid(),
-                                    menuRestau.getRestauName(),
-                                    menuRestau.getRestauId()
-                            );
-
-                            showDialog(commandeMenu);
-                        }
-                    });
+                if (menuRestau.stars.containsKey(getUid())) {
+                    allMenuViewHolder.getStarView().setImageResource(R.drawable.ic_star_black_24dp);
+                } else {
+                    allMenuViewHolder.getStarView().setImageResource(R.drawable.ic_star_border_black_24dp);
                 }
-            };
 
-            mRecycler.setAdapter(mAdapter);
-            swipeRefreshLayout.setRefreshing(false);
-            mAdapter.notifyDataSetChanged();
-        }
+                switch (menuRestau.getType()) {
+                    case "Plat Africain":
+                        allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_restaurant);
+                        break;
+                    case "Pizza":
+                        allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_pie);
+                        break;
+                    case "Burger":
+                        allMenuViewHolder.getMenuIconTypeImageView().setImageResource(R.drawable.ic_fast_food);
+                        break;
+                }
+
+                allMenuViewHolder.startAnim();
+
+                StorageReference imageRef = mStorage.child("images").child("menu").child(menuRestauKey);
+
+                Glide.with(mActivity)
+                        .using(new FirebaseImageLoader())
+                        .load(imageRef)
+                        .crossFade()
+                        .signature(new StringSignature(menuRestau.getMd5Hash()))
+                        .listener(new RequestListener<StorageReference, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, StorageReference ref,
+                                                       Target<GlideDrawable> target,
+                                                       boolean isFirstResource) {
+                                allMenuViewHolder.stopAnim();
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource,
+                                                           StorageReference ref, Target<GlideDrawable> target,
+                                                           boolean isFromMemoryCache,
+                                                           boolean isFirstResource) {
+                                allMenuViewHolder.stopAnim();
+                                return false;
+                            }
+                        })
+                        .into(allMenuViewHolder.getMenuImageView());
+
+                allMenuViewHolder.bindToPost(menuRestau, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatabaseReference globalmenuRestauRef = mDatabase.child("menu").child(menuRestauKey);
+                        DatabaseReference restauMenuRef = mDatabase.child("restau-menus").child(menuRestau.getRestauId()).child(menuRestauKey);
+
+                        // Run two transactions
+                        onStarClicked(globalmenuRestauRef);
+                        onStarClicked(restauMenuRef);
+                    }
+                }, new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                        CommandeMenu commandeMenu = new CommandeMenu(
+                                menuRestau.getTitle(),
+                                menuRestau.getType(),
+                                menuRestauKey,
+                                menuRestau.getPrice(),
+                                currentUser.getDisplayName().isEmpty() ? currentUser.getPhoneNumber() : currentUser.getDisplayName(),
+                                currentUser.getUid(),
+                                menuRestau.getRestauName(),
+                                menuRestau.getRestauId()
+                        );
+
+                        showDialog(commandeMenu);
+                    }
+                });
+            }
+        };
+
+        mRecycler.setAdapter(mAdapter);
+        swipeRefreshLayout.setRefreshing(false);
+        mAdapter.notifyDataSetChanged();
     }
 
     void showDialog(CommandeMenu commandeMenu) {
@@ -248,6 +247,7 @@ public abstract class AllMenuListFragment extends Fragment {
         CommandeDialogFragment commandeDialogFragment = CommandeDialogFragment
                 .newInstance(commandeMenu);
 
+        commandeDialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
         commandeDialogFragment.setCancelable(false);
         commandeDialogFragment.show(getFragmentManager(), "Commande");
     }

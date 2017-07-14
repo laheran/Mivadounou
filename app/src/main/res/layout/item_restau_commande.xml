@@ -9,14 +9,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/backin"
+        android:background="#EEEEEE"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -27,6 +30,7 @@
                     android:id="@+id/menu_icon_type"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_marginRight="5dp"
                     app:srcCompat="@drawable/ic_restaurant_menu_black_24dp" />
             </LinearLayout>
 
@@ -37,55 +41,108 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/commande_text1"
+                    android:id="@+id/commande_menu_and_restau_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Riz Gras a la Tomate | Akif"
+                    android:text="Riz Gras a la Tomate"
                     android:textSize="@dimen/textview_commande" />
 
                 <TextView
-                    android:id="@+id/commande_text2"
+                    android:id="@+id/commande_quantity_and_unit_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Quantité : 3, Prix unitaire : 200 FCAF"
                     android:textSize="@dimen/textview_commande" />
 
                 <TextView
-                    android:id="@+id/commande_text3"
+                    android:id="@+id/commande_total_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Prix Total : 600 FCAF"
                     android:textSize="@dimen/textview_commande" />
 
                 <TextView
-                    android:id="@+id/commande_text4"
+                    android:id="@+id/commande_end_date_and_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pour la 23, July, 2013 à 13h30"
                     android:textSize="@dimen/textview_commande" />
 
                 <TextView
-                    android:id="@+id/commande_text5"
+                    android:id="@+id/commande_end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Il y a 5 min" />
-            </LinearLayout>
+                    android:text="dans 5min"
+                    android:textSize="@dimen/textview_commande" />
 
+                <TextView
+                    android:id="@+id/commande_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status : Reçu"
+                    android:textSize="@dimen/textview_commande" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:srcCompat="@drawable/ic_user_dot" />
+
+                    <TextView
+                        android:id="@+id/commande_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="blande daniel | " />
+
+                    <TextView
+                        android:id="@+id/commande_past_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Il y a 5 min" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginTop="-5dp"
             android:layout_height="wrap_content"
-            android:background="@color/backin"
+            android:background="#EEEEEE"
             android:gravity="center">
 
             <Button
-                android:id="@+id/send_commande"
-                android:layout_width="200dp"
+                android:id="@+id/commande_reject"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:backgroundTint="#B71C1C"
+                android:padding="0dp"
+                android:text="Rejetter"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/commande_accept"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/colorAccent"
+                android:padding="0dp"
+                android:text="Accepter"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/commande_done"
+                android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:backgroundTint="@color/starTint"
                 android:padding="0dp"
-                android:text="Annuler"
+                android:text="Effectuer"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 

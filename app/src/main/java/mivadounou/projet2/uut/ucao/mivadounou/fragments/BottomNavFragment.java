@@ -1,6 +1,5 @@
 package mivadounou.projet2.uut.ucao.mivadounou.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +44,6 @@ public class BottomNavFragment extends Fragment {
     private BottomNavigationView mBottomNav;
 
     private ActionBar actionBar;
-
-    private Activity mActivity;
-
-    private List<String> tagsList = new ArrayList<>();
 
     private AccueilFragment accueilFragment = new AccueilFragment();
     private LocationFragment locationFragment = new LocationFragment();
@@ -89,13 +83,13 @@ public class BottomNavFragment extends Fragment {
         getChildFragmentManager()
                 .beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(R.id.content, rechercheFragment, TAG_HOME_FRAGMENT)
+                .add(R.id.content, rechercheFragment, TAG_SEARCH_FRAGMENT)
                 .commit();
 
         getChildFragmentManager()
                 .beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(R.id.content, commandeFragment, TAG_HOME_FRAGMENT)
+                .add(R.id.content, commandeFragment, TAG_COMMANDE_FRAGMENT)
                 .commit();
 
         getChildFragmentManager()
@@ -140,8 +134,6 @@ public class BottomNavFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
-
-        mActivity = getActivity();
 
         actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
     }

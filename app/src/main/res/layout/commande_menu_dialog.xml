@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backin"
+    android:minHeight="250dp"
+    android:minWidth="300dp"
     android:orientation="vertical">
 
     <ImageView
@@ -29,11 +31,19 @@
             android:textSize="20dp" />
 
         <TextView
-            android:id="@+id/commande_menu_desc"
+            android:id="@+id/commande_menu_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Akif | prix : 290 FCFA"
+            android:text="prix : 290 FCFA"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/commande_menu_restau"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Akif"
             android:textSize="20dp" />
 
         <LinearLayout
@@ -115,6 +125,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="-3dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:orientation="horizontal">

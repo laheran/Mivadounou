@@ -7,7 +7,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="textview_commande">15dp</dimen>
+    <dimen name="textview_commande">17dp</dimen>
 
     <dimen name="TextInputLayout_width">180dp</dimen>
     <dimen name="TextInputLayout_width_medium">200dp</dimen>

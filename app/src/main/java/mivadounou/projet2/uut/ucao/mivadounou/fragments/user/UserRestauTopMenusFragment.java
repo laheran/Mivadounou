@@ -2,16 +2,11 @@ package mivadounou.projet2.uut.ucao.mivadounou.fragments.user;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
-import mivadounou.projet2.uut.ucao.mivadounou.R;
-import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
-import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewMenuFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewRestauFragment;
-import mivadounou.projet2.uut.ucao.mivadounou.models.MenuRestau;
 
 /**
  * Created by leinad on 7/5/17.

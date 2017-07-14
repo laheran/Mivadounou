@@ -2,6 +2,7 @@ package mivadounou.projet2.uut.ucao.mivadounou.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference databaseReference;
     private SharedPreferences userSharedPreferences;
 
+    public static NotificationManager notificationManager;
+
     public static void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
@@ -106,6 +109,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         msActivity = this;
 
@@ -220,7 +225,7 @@ public class MainActivity extends AppCompatActivity
 
         } else {
 
-            updateToolbarText("Céer un Restaurant");
+            updateToolbarText("Gérer un Restaurant");
 
             hideAndShow(MainActivity.TAG_NEW_RESTAU_FRAGMENT, new NewRestauFragment());
 
@@ -1015,9 +1020,9 @@ public class MainActivity extends AppCompatActivity
 
                     updateToolbarText("Authentification");
 
-                    oldTag = MainActivity.TAG_PHONE_AUTH_FRAGMENT;
+                    oldTag = MainActivity.TAG_CHOOSE_AUTH_FRAGMENT;
 
-                    hideAndShow(MainActivity.TAG_PHONE_AUTH_FRAGMENT, new ChooseAuthFragment());
+                    hideAndShow(MainActivity.TAG_CHOOSE_AUTH_FRAGMENT, new ChooseAuthFragment());
                 }
 
                 break;

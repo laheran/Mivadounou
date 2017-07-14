@@ -20,7 +20,7 @@ import mivadounou.projet2.uut.ucao.mivadounou.models.CommandeMenu;
  * Created by leinad on 7/13/17.
  */
 
-public class AllCommandeViewHolder extends RecyclerView.ViewHolder {
+public class UserRestauCommandeViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TIME_PATTERN = "HH:mm";
 
@@ -29,18 +29,20 @@ public class AllCommandeViewHolder extends RecyclerView.ViewHolder {
     private TextView cTotalPrice;
     private TextView cDateAndEndTime;
     private TextView cPastTime;
+    private TextView cEndTime;
+    private TextView cUsername;
     private TextView cStatus;
-    private TextView commandeTitle;
 
     private ImageView menuIconTypeImageView;
-    private ImageView menuIconStatusImageView;
 
-    private Button cancellCommande;
+    private Button rejectCommande;
+    private Button acceptCommande;
+    private Button doneCommande;
 
     private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
     private SimpleDateFormat timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
 
-    public AllCommandeViewHolder(View itemView) {
+    public UserRestauCommandeViewHolder(View itemView) {
 
         super(itemView);
 
@@ -49,46 +51,74 @@ public class AllCommandeViewHolder extends RecyclerView.ViewHolder {
         cTotalPrice = (TextView) itemView.findViewById(R.id.commande_total_price);
         cDateAndEndTime = (TextView) itemView.findViewById(R.id.commande_end_date_and_time);
         cPastTime = (TextView) itemView.findViewById(R.id.commande_past_time);
+        cEndTime = (TextView) itemView.findViewById(R.id.commande_end_time);
+        cUsername = (TextView) itemView.findViewById(R.id.commande_username);
         cStatus = (TextView) itemView.findViewById(R.id.commande_status);
-        commandeTitle = (TextView) itemView.findViewById(R.id.commande_title);
 
         menuIconTypeImageView = (ImageView) itemView.findViewById(R.id.menu_icon_type);
-        menuIconStatusImageView = (ImageView) itemView.findViewById(R.id.menu_icon_status);
 
-        cancellCommande = (Button) itemView.findViewById(R.id.cancel_commande);
-
+        rejectCommande = (Button) itemView.findViewById(R.id.commande_reject);
+        acceptCommande = (Button) itemView.findViewById(R.id.commande_accept);
+        doneCommande = (Button) itemView.findViewById(R.id.commande_done);
     }
 
-    public void bindToPost(CommandeMenu commandeMenu, View.OnClickListener onClickListener) {
+    public void bindToPost(CommandeMenu commandeMenu, View.OnClickListener rejectOnClickListener,
+                           View.OnClickListener accepteOnClickListener, View.OnClickListener doneOnClickListener) {
 
         switch (commandeMenu.getStatus()) {
             case CommandeMenu.COMMANDE_SENT:
-                cStatus.setText("Status : Envoyeé");
+                cStatus.setText("Status : Reçu");
+                break;
 
-                menuIconStatusImageView.setImageResource(R.drawable.ic_lens_black_24dp);
+            case CommandeMenu.COMMANDE_REJECT:
+                cStatus.setText("Status : Rejetter");
 
-                cancellCommande.setEnabled(true);
+                acceptCommande.setEnabled(false);
+                acceptCommande.setVisibility(View.GONE);
+
+                rejectCommande.setEnabled(false);
+                rejectCommande.setVisibility(View.GONE);
+
+                doneCommande.setEnabled(false);
+                doneCommande.setVisibility(View.GONE);
+                break;
+
+            case CommandeMenu.COMMANDE_CANCELED:
+                cStatus.setText("Status : Annuler");
+
+                acceptCommande.setEnabled(false);
+                acceptCommande.setVisibility(View.GONE);
+
+                rejectCommande.setEnabled(false);
+                acceptCommande.setVisibility(View.GONE);
+
+                doneCommande.setEnabled(false);
+                acceptCommande.setVisibility(View.GONE);
+                break;
+
+            case CommandeMenu.COMMANDE_DONE:
+                cStatus.setText("Status : Effectuer");
+
+                acceptCommande.setEnabled(false);
+                acceptCommande.setVisibility(View.GONE);
+
+                rejectCommande.setEnabled(false);
+                rejectCommande.setVisibility(View.GONE);
+
+                doneCommande.setEnabled(false);
+                doneCommande.setVisibility(View.GONE);
                 break;
 
             case CommandeMenu.COMMANDE_ACCEPT:
                 cStatus.setText("Status : Acceptée");
 
-                menuIconStatusImageView.setImageResource(R.drawable.ic_lens_yellow_24dp);
+                acceptCommande.setEnabled(false);
+                acceptCommande.setVisibility(View.GONE);
 
-                cancellCommande.setEnabled(false);
-                cancellCommande.setVisibility(View.GONE);
+                rejectCommande.setEnabled(false);
+                rejectCommande.setVisibility(View.GONE);
 
-                break;
-
-            case CommandeMenu.COMMANDE_DONE:
-                cStatus.setText("Status : Effectuée");
-
-                commandeTitle.setText("Vouz aviez commandez");
-
-                menuIconStatusImageView.setImageResource(R.drawable.ic_lens_green_24dp);
-
-                cancellCommande.setEnabled(false);
-                cancellCommande.setVisibility(View.GONE);
+                doneCommande.setEnabled(true);
                 break;
         }
 
@@ -104,9 +134,10 @@ public class AllCommandeViewHolder extends RecyclerView.ViewHolder {
                 break;
         }
 
-        cRestauAndMenuTitle.setText(commandeMenu.getMenuTitle() + " à " + commandeMenu.getRestauTitle());
+        cRestauAndMenuTitle.setText(commandeMenu.getMenuTitle());
         cQuantityAndPrice.setText("Quantité : " + commandeMenu.getQuantity() + ", Prix unitaire : " + commandeMenu.getUnitPrice() + " FCFA");
         cTotalPrice.setText("Prix totale : " + commandeMenu.getTotalPrice() + " FCFA");
+        cUsername.setText(commandeMenu.getUserName() + "   |   ");
 
         Calendar endAtCalendar = Calendar.getInstance();
         endAtCalendar.setTimeInMillis(commandeMenu.getEndAtTimestamp());
@@ -118,8 +149,12 @@ public class AllCommandeViewHolder extends RecyclerView.ViewHolder {
 
         PrettyTime prettyTime = new PrettyTime(new Locale("fr"));
 
-        cPastTime.setText("Envoyée " + prettyTime.format(createAtCalendar.getTime()));
+        cPastTime.setText("Reçu " + prettyTime.format(createAtCalendar.getTime()));
 
-        cancellCommande.setOnClickListener(onClickListener);
+        cEndTime.setText(prettyTime.format(endAtCalendar.getTime()));
+
+        rejectCommande.setOnClickListener(rejectOnClickListener);
+        acceptCommande.setOnClickListener(accepteOnClickListener);
+        doneCommande.setOnClickListener(doneOnClickListener);
     }
 }

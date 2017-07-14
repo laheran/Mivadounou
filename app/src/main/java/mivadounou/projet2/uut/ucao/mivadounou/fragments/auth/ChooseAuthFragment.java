@@ -35,9 +35,9 @@ public class ChooseAuthFragment extends Fragment {
     };
 
     private static final String[] DESCRIPTIONS = new String[]{
-            "Use a Google Sign In credential to authenticate with Firebase.",
-            "Use an email and password to authenticate with Firebase.",
-            "Use a phone number to authenticate with Firebase."
+            "Vouz pouvez Utiliser votre compte Google pour vous authentifier à Mivadounou.",
+            "Vouz pouvez Utiliser un email valide et um mot de pass pour vous authentifier à Mivadounou.",
+            "Vouz pouvez Utiliser votre numero de téléphone pour vous authentifier à Mivadounou."
     };
 
     private static final String[] TAGS = new String[]{

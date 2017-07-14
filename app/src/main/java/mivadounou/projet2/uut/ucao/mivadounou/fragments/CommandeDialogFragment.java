@@ -42,7 +42,8 @@ public class CommandeDialogFragment extends DialogFragment implements DatePicker
     private static final String TIME_PATTERN = "HH:mm";
 
     private TextView cMenuTitleTextView;
-    private TextView cMenuDescPriceTextView;
+    private TextView cMenuPriceTextView;
+    private TextView cMenuRestauTitleTextView;
     private TextView cMenuEndAtDateTextView;
     private TextView cMenuEndAtTimeTextView;
 
@@ -73,18 +74,28 @@ public class CommandeDialogFragment extends DialogFragment implements DatePicker
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        commandeMenu = getArguments().getParcelable("commandeMenu");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.commande_menu_dialog, container, false);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
         calendar = Calendar.getInstance();
         dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
 
         cMenuTitleTextView = (TextView) v.findViewById(R.id.commande_menu_title);
-        cMenuDescPriceTextView = (TextView) v.findViewById(R.id.commande_menu_desc);
+        cMenuPriceTextView = (TextView) v.findViewById(R.id.commande_menu_price);
+        cMenuRestauTitleTextView = (TextView) v.findViewById(R.id.commande_menu_restau);
         cMenuEndAtDateTextView = (TextView) v.findViewById(R.id.commande_menu_end_at_date);
         cMenuEndAtTimeTextView = (TextView) v.findViewById(R.id.commande_menu_end_at_time);
 
@@ -111,7 +122,8 @@ public class CommandeDialogFragment extends DialogFragment implements DatePicker
         }
 
         cMenuTitleTextView.setText(commandeMenu.getMenuTitle());
-        cMenuDescPriceTextView.setText(commandeMenu.getRestauTitle() + " | Prix : " + commandeMenu.getUnitPrice());
+        cMenuPriceTextView.setText("Prix : " + commandeMenu.getUnitPrice() + " FCFA");
+        cMenuRestauTitleTextView.setText(commandeMenu.getRestauTitle());
 
         cMenuChooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,12 +171,17 @@ public class CommandeDialogFragment extends DialogFragment implements DatePicker
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     public void sendCommande() {
         int quantity = Integer.valueOf(quantityEditText.getText().toString());
         commandeMenu.setQuantity(quantity);
         commandeMenu.setTotalPrice(quantity * commandeMenu.getUnitPrice());
         commandeMenu.setEndAtTimestamp(calendar.getTimeInMillis());
-        commandeMenu.setCreateAtTimestamp(System.currentTimeMillis() / 1000);
+        commandeMenu.setCreateAtTimestamp(Calendar.getInstance().getTimeInMillis());
         commandeMenu.setStatus(CommandeMenu.COMMANDE_SENT);
 
         String newCommandeKey = mDatabase.child("user-commandes").push().getKey();
@@ -193,13 +210,7 @@ public class CommandeDialogFragment extends DialogFragment implements DatePicker
                                 sweetAlertDialog
                                         .setTitleText("Commande éffectuée")
                                         .setContentText("Commande envoyée avec succès au retaurant " + commandeMenu.getRestauTitle())
-                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-                                                sweetAlertDialog.hide();
-                                            }
-                                        })
+                                        .setConfirmClickListener(null)
                                         .show();
                             }
                         }, 50);
@@ -240,14 +251,6 @@ public class CommandeDialogFragment extends DialogFragment implements DatePicker
                 true
         );
         timePickerDialog.show(getFragmentManager(), "Datepickerdialog");
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        commandeMenu = getArguments().getParcelable("commandeMenu");
-
     }
 
     @Override

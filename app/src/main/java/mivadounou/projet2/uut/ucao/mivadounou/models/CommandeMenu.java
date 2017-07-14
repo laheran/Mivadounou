@@ -37,6 +37,9 @@ public class CommandeMenu implements Parcelable {
     private long endAtTimestamp;
     private long createAtTimestamp;
 
+    public CommandeMenu() {
+    }
+
     public CommandeMenu(String menuTitle, String menuType, String menuKey, int unitPrice,
                         String userName, String userKey, String restauTitle, String restauKey) {
         this.menuTitle = menuTitle;
@@ -55,7 +58,6 @@ public class CommandeMenu implements Parcelable {
         menuKey = in.readString();
         unitPrice = in.readInt();
         userName = in.readString();
-        userKey = in.readString();
         userKey = in.readString();
         restauTitle = in.readString();
         restauKey = in.readString();
@@ -102,7 +104,7 @@ public class CommandeMenu implements Parcelable {
         result.put("menuType", menuType);
         result.put("menuKey", menuKey);
 
-        result.put("quantity", totalPrice);
+        result.put("quantity", quantity);
         result.put("unitPrice", unitPrice);
         result.put("totalPrice", totalPrice);
 
@@ -118,6 +120,26 @@ public class CommandeMenu implements Parcelable {
         result.put("createAtTimestamp", createAtTimestamp);
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CommandeMenu{" +
+                "number=" + number +
+                ", menuTitle='" + menuTitle + '\'' +
+                ", menuType='" + menuType + '\'' +
+                ", menuKey='" + menuKey + '\'' +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", totalPrice=" + totalPrice +
+                ", userName='" + userName + '\'' +
+                ", userKey='" + userKey + '\'' +
+                ", restauTitle='" + restauTitle + '\'' +
+                ", restauKey='" + restauKey + '\'' +
+                ", status='" + status + '\'' +
+                ", endAtTimestamp=" + endAtTimestamp +
+                ", createAtTimestamp=" + createAtTimestamp +
+                '}';
     }
 
     public int getNumber() {

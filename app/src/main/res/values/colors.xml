@@ -2,11 +2,12 @@
 <resources>
     <color name="colorPrimary">#039BE5</color>
     <color name="colorPrimaryDark">#0288D1</color>
-    <color name="colorAccent">#FFA000</color>
+    <color name="colorAccent">#FFC107</color>
 
     <!--<color name="colorAccent">#FF4081</color>-->
     <color name="back">#ECF0F1</color>
     <color name="backin">#F5F5F5</color>
+    <color name="black">#000000</color>
     <color name="color_home">#009688</color>
     <color name="color_notifications">#9C27B0</color>
     <color name="back2">#f44336</color>

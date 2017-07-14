@@ -32,8 +32,6 @@ public class AccueilFragment extends Fragment {
 
     private ViewPager mViewPager;
 
-    private Activity mActivity;
-
     private TabLayout tabLayout;
 
     public AccueilFragment() {
@@ -70,8 +68,6 @@ public class AccueilFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
-
-        mActivity = getActivity();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
