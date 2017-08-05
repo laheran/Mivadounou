@@ -50,6 +50,7 @@ import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.user.UserRestauFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.models.MenuRestau;
+import mivadounou.projet2.uut.ucao.mivadounou.other.FirebaseRef;
 
 public class NewMenuFragment extends Fragment {
 
@@ -190,7 +191,8 @@ public class NewMenuFragment extends Fragment {
 
             startAnim();
 
-            final StorageReference imageRef = mStorage.child("images").child("menu").child(currentKey);
+            final StorageReference imageRef = mStorage.child(FirebaseRef.IMAGES)
+                    .child(FirebaseRef.MENU).child(currentKey);
 
             Glide.with(mActivity)
                     .using(new FirebaseImageLoader())
@@ -279,7 +281,8 @@ public class NewMenuFragment extends Fragment {
 
     private void createOrUpdateMenu(final MenuRestau menuRestau) {
 
-        final String newMenukey = isUpdate ? currentKey : mDatabase.child("restau-menus").push().getKey();
+        final String newMenukey = isUpdate ? currentKey : mDatabase.child(FirebaseRef.RESTAU_MENUS)
+                .push().getKey();
 
         if (MainActivity.isNetworkAvailable(mActivity)) {
 
@@ -288,7 +291,8 @@ public class NewMenuFragment extends Fragment {
                 MainActivity.mProgressDialog.setMessage("Envoie de l'image encoure ...");
                 MainActivity.showProgressDialog();
 
-                final StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("images").child("menu").child(newMenukey);
+                final StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                        .child(FirebaseRef.IMAGES).child(FirebaseRef.MENU).child(newMenukey);
 
                 imageView.setDrawingCacheEnabled(true);
                 imageView.buildDrawingCache();
@@ -305,7 +309,8 @@ public class NewMenuFragment extends Fragment {
 
                         MainActivity.hideProgressDialog();
 
-                        MainActivity.mDialog("", "Echec de l'envoie de l'image veuillez vérifier votre connexion internet !").show();
+                        MainActivity.mDialog("",
+                                "Echec de l'envoie de l'image veuillez vérifier votre connexion internet !").show();
 
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -317,9 +322,11 @@ public class NewMenuFragment extends Fragment {
                         MainActivity.hideProgressDialog();
 
                         if (isUpdate) {
-                            MainActivity.mProgressDialog.setMessage("Modification du menu encoure ...");
+                            MainActivity.mProgressDialog
+                                    .setMessage("Modification du menu encoure ...");
                         } else {
-                            MainActivity.mProgressDialog.setMessage("Creation du menu encoure ...");
+                            MainActivity.mProgressDialog
+                                    .setMessage("Creation du menu encoure ...");
                         }
 
                         MainActivity.showProgressDialog();
@@ -333,8 +340,9 @@ public class NewMenuFragment extends Fragment {
                                 Map<String, Object> menuValues = menuRestau.toMap();
 
                                 Map<String, Object> childUpdates = new HashMap<>();
-                                childUpdates.put("/menu/" + newMenukey, menuValues);
-                                childUpdates.put("/restau-menus/" + menuRestau.getRestauId() + "/" + newMenukey, menuValues);
+                                childUpdates.put("/" + FirebaseRef.MENU + "/" + newMenukey, menuValues);
+                                childUpdates.put("/" + FirebaseRef.RESTAU_MENUS + "/"
+                                        + menuRestau.getRestauId() + "/" + newMenukey, menuValues);
 
                                 mDatabase.updateChildren(childUpdates)
                                         .addOnCompleteListener(mActivity, new OnCompleteListener<Void>() {
@@ -344,14 +352,19 @@ public class NewMenuFragment extends Fragment {
                                                 MainActivity.hideProgressDialog();
 
                                                 if (!isUpdate) {
-                                                    Toast.makeText(mActivity, "Nouveau menu crée !", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(mActivity,
+                                                            "Nouveau menu crée !",
+                                                            Toast.LENGTH_LONG).show();
                                                 } else {
-                                                    Toast.makeText(mActivity, "Menu modifié !", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(mActivity,
+                                                            "Menu modifié !",
+                                                            Toast.LENGTH_LONG).show();
                                                 }
 
                                                 if (getParentFragment() instanceof UserRestauFragment) {
 
-                                                    ((UserRestauFragment) getParentFragment()).hideAndShow(UserRestauFragment.TAG_USER_RESTAU_HOME_FRAGMENT);
+                                                    ((UserRestauFragment) getParentFragment())
+                                                            .hideAndShow(UserRestauFragment.TAG_USER_RESTAU_HOME_FRAGMENT);
                                                 }
 
                                             }
@@ -360,7 +373,9 @@ public class NewMenuFragment extends Fragment {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 MainActivity.hideProgressDialog();
-                                                Toast.makeText(mActivity, "Failed to update children " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(mActivity,
+                                                        "Failed to update children " + e.getMessage(),
+                                                        Toast.LENGTH_LONG).show();
                                             }
                                         });
                             }
@@ -381,8 +396,9 @@ public class NewMenuFragment extends Fragment {
                 Map<String, Object> menuValues = menuRestau.toMap();
 
                 Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("/menu/" + newMenukey, menuValues);
-                childUpdates.put("/restau-menus/" + menuRestau.getRestauId() + "/" + newMenukey, menuValues);
+                childUpdates.put("/" + FirebaseRef.MENU + "/" + newMenukey, menuValues);
+                childUpdates.put("/" + FirebaseRef.RESTAU_MENUS + "/"
+                        + menuRestau.getRestauId() + "/" + newMenukey, menuValues);
 
                 mDatabase.updateChildren(childUpdates)
                         .addOnCompleteListener(mActivity, new OnCompleteListener<Void>() {
@@ -392,14 +408,19 @@ public class NewMenuFragment extends Fragment {
                                 MainActivity.hideProgressDialog();
 
                                 if (!isUpdate) {
-                                    Toast.makeText(mActivity, "Nouveau menu crée !", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(mActivity,
+                                            "Nouveau menu crée !",
+                                            Toast.LENGTH_LONG).show();
                                 } else {
-                                    Toast.makeText(mActivity, "Menu modifié !", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(mActivity,
+                                            "Menu modifié !",
+                                            Toast.LENGTH_LONG).show();
                                 }
 
                                 if (getParentFragment() instanceof UserRestauFragment) {
 
-                                    ((UserRestauFragment) getParentFragment()).hideAndShow(UserRestauFragment.TAG_USER_RESTAU_HOME_FRAGMENT);
+                                    ((UserRestauFragment) getParentFragment())
+                                            .hideAndShow(UserRestauFragment.TAG_USER_RESTAU_HOME_FRAGMENT);
                                 }
 
                             }
@@ -408,12 +429,16 @@ public class NewMenuFragment extends Fragment {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 MainActivity.hideProgressDialog();
-                                Toast.makeText(mActivity, "Failed to update children " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(mActivity,
+                                        "Failed to update children " + e.getMessage(),
+                                        Toast.LENGTH_LONG).show();
                             }
                         });
             }
         } else {
-            Toast.makeText(mActivity, "Verifier votre connexion internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity,
+                    "Verifier votre connexion internet",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

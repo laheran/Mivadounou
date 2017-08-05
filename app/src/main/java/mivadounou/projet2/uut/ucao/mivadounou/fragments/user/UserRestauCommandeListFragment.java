@@ -38,9 +38,6 @@ public abstract class UserRestauCommandeListFragment extends Fragment {
 
     private static final String TAG = "RestauMenuListFragment";
 
-    private int transactionCounter = 0;
-    private int transactionNumber = 0;
-
     // [START define_database_reference]
     private DatabaseReference mDatabase;
     // [END define_database_reference]
@@ -49,7 +46,7 @@ public abstract class UserRestauCommandeListFragment extends Fragment {
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
 
-    protected SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     protected Activity mActivity;
 

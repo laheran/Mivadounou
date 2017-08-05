@@ -113,7 +113,6 @@ public class EmailPasswordFragment extends Fragment implements
         mVerifyButton = (Button) rootView.findViewById(R.id.verify_email_button);
         mVerifyButton.setOnClickListener(this);
 
-
         return rootView;
     }
 
@@ -291,7 +290,7 @@ public class EmailPasswordFragment extends Fragment implements
             mEmailField.setError("Email invalide.");
             valid = false;
         } else {
-            currentEmail = mEmailField.getText().toString().toString();
+            currentEmail = mEmailField.getText().toString();
             mEmailField.setError(null);
         }
 

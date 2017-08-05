@@ -3,7 +3,6 @@ package mivadounou.projet2.uut.ucao.mivadounou.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +13,8 @@ import java.util.List;
 
 public class mFragmentAdapter extends FragmentPagerAdapter {
 
-    List<Fragment> fragments = new ArrayList<>();
-    List<String> titles = new ArrayList<>();
+    private List<Fragment> fragments = new ArrayList<>();
+    private List<String> titles = new ArrayList<>();
 
     public mFragmentAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
         super(fm);

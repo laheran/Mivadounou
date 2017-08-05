@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 import mivadounou.projet2.uut.ucao.mivadounou.models.CommandeMenu;
+import mivadounou.projet2.uut.ucao.mivadounou.other.FirebaseRef;
 
 /**
  * Created by leinad on 7/14/17.
@@ -19,7 +20,8 @@ public class CommandeDoneFragment extends AllCommandeListFragment {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        return databaseReference.child("user-commandes")
+        assert currentUser != null;
+        return databaseReference.child(FirebaseRef.USER_COMMANDES)
                 .child(currentUser.getUid())
                 .orderByChild("status")
                 .equalTo(CommandeMenu.COMMANDE_DONE);

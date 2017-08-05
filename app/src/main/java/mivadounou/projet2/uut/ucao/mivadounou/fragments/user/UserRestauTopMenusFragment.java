@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewRestauFragment;
+import mivadounou.projet2.uut.ucao.mivadounou.other.FirebaseRef;
 
 /**
  * Created by leinad on 7/5/17.
@@ -19,10 +20,8 @@ public class UserRestauTopMenusFragment extends RestauMenuListFragment {
 
         SharedPreferences user = mActivity.getPreferences(Context.MODE_PRIVATE);
 
-        String restauKey = user.getString(NewRestauFragment.RESTAU_KEY, "");
-
-        return databaseReference.child("restau-menus")
-                .child(restauKey)
+        return databaseReference.child(FirebaseRef.RESTAU_MENUS)
+                .child(user.getString(NewRestauFragment.RESTAU_KEY, ""))
                 .orderByChild("starCount")
                 .startAt(1);
     }

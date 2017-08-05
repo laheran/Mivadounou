@@ -39,7 +39,7 @@ public class UserRestauCommandeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static UserRestauCommandeFragment newInstance(String param1, String param2) {
+    public static UserRestauCommandeFragment newInstance() {
         UserRestauCommandeFragment fragment = new UserRestauCommandeFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);

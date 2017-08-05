@@ -64,8 +64,6 @@ public abstract class AllMenuListFragment extends Fragment {
 
     protected Activity mActivity;
 
-    private SharedPreferences userSharedPreferences;
-
     private FirebaseAuth mAuth;
 
     public AllMenuListFragment() {
@@ -104,8 +102,6 @@ public abstract class AllMenuListFragment extends Fragment {
         mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
         mRecycler.setHasFixedSize(true);
-
-        userSharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 

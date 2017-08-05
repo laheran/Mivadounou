@@ -36,6 +36,7 @@ import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewMenuFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.models.MenuRestau;
+import mivadounou.projet2.uut.ucao.mivadounou.other.FirebaseRef;
 import mivadounou.projet2.uut.ucao.mivadounou.viewholder.MenuRestauViewHolder;
 
 public abstract class RestauMenuListFragment extends Fragment {
@@ -191,8 +192,8 @@ public abstract class RestauMenuListFragment extends Fragment {
                     menuRestauViewHolder.bindToPost(menuRestau, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            DatabaseReference globalmenuRestauRef = mDatabase.child("menu").child(menuRestauKey);
-                            DatabaseReference restauMenuRef = mDatabase.child("restau-menus").child(menuRestau.getRestauId()).child(menuRestauKey);
+                            DatabaseReference globalmenuRestauRef = mDatabase.child(FirebaseRef.MENU).child(menuRestauKey);
+                            DatabaseReference restauMenuRef = mDatabase.child(FirebaseRef.RESTAU_MENUS).child(menuRestau.getRestauId()).child(menuRestauKey);
 
                             // Run two transactions
                             onStarClicked(globalmenuRestauRef);

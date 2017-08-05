@@ -134,7 +134,6 @@ public class ChooseAuthFragment extends Fragment {
     public static class MyArrayAdapter extends ArrayAdapter<Fragment> {
 
         private Context mContext;
-        private Fragment[] mFragments;
         private String[] mDescription;
         private int[] mImageResources;
 
@@ -144,7 +143,6 @@ public class ChooseAuthFragment extends Fragment {
             super(context, resource, fragments);
 
             mContext = context;
-            this.mFragments = fragments;
             this.mDescription = descriptions;
             this.mImageResources = mImageResources;
         }

@@ -28,6 +28,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
 import mivadounou.projet2.uut.ucao.mivadounou.models.CommandeMenu;
+import mivadounou.projet2.uut.ucao.mivadounou.other.FirebaseRef;
 import mivadounou.projet2.uut.ucao.mivadounou.viewholder.AllCommandeViewHolder;
 
 /**
@@ -37,9 +38,6 @@ import mivadounou.projet2.uut.ucao.mivadounou.viewholder.AllCommandeViewHolder;
 public abstract class AllCommandeListFragment extends Fragment {
 
     private static final String TAG = "RestauMenuListFragment";
-
-    private int transactionCounter = 0;
-    private int transactionNumber = 0;
 
     // [START define_database_reference]
     private DatabaseReference mDatabase;
@@ -151,22 +149,6 @@ public abstract class AllCommandeListFragment extends Fragment {
                                         MainActivity.mProgressDialog.setMessage("Annulation encoure...");
                                         MainActivity.showProgressDialog();
 
-                                        transactionNumber = 3;
-                                        transactionCounter = 0;
-
-                                        DatabaseReference commandeReference = mDatabase
-                                                .child("commande").child(commandeKey);
-
-                                        DatabaseReference userCommandeReference = mDatabase
-                                                .child("user-commandes")
-                                                .child(commandeMenu.getUserKey())
-                                                .child(commandeKey);
-
-                                        DatabaseReference restauCommandeReference = mDatabase
-                                                .child("restau-commandes")
-                                                .child(commandeMenu.getRestauKey())
-                                                .child(commandeKey);
-
                                         commandeMenu.setStatus(CommandeMenu.COMMANDE_CANCELED);
                                         updateCommande(commandeMenu, commandeKey);
                                     }
@@ -188,9 +170,9 @@ public abstract class AllCommandeListFragment extends Fragment {
         Map<String, Object> commandeMenuValues = commandeMenu.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/commande/" + commandeKey, commandeMenuValues);
-        childUpdates.put("/user-commandes/" + commandeMenu.getUserKey() + "/" + commandeKey, commandeMenuValues);
-        childUpdates.put("/restau-commandes/" + commandeMenu.getRestauKey() + "/" + commandeKey, commandeMenuValues);
+        childUpdates.put("/" + FirebaseRef.COMMANDE + "/" + commandeKey, commandeMenuValues);
+        childUpdates.put("/" + FirebaseRef.USER_COMMANDES + "/" + commandeMenu.getUserKey() + "/" + commandeKey, commandeMenuValues);
+        childUpdates.put("/" + FirebaseRef.RESTAU_COMMANDES + "/" + commandeMenu.getRestauKey() + "/" + commandeKey, commandeMenuValues);
 
         mDatabase.updateChildren(childUpdates)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {

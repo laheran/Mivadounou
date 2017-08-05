@@ -48,6 +48,7 @@ import mivadounou.projet2.uut.ucao.mivadounou.R;
 import mivadounou.projet2.uut.ucao.mivadounou.activities.MainActivity;
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.user.UserRestauFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.models.Restau;
+import mivadounou.projet2.uut.ucao.mivadounou.other.FirebaseRef;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,8 +74,6 @@ public class NewRestauFragment extends Fragment {
     private Button mNewRestau;
 
     private Activity mActivity;
-
-    private FragmentTransaction fragmentTransaction;
 
     private ActionBar actionBar;
 
@@ -207,30 +206,45 @@ public class NewRestauFragment extends Fragment {
 
     private void createNewRestau(final Restau restau) {
 
-        final String newRestaukey = mDatabase.child("user-restaus").push().getKey();
+        final String newRestaukey = mDatabase.child(FirebaseRef.USER_RESTAUS).push().getKey();
 
         Map<String, Object> restauValues = restau.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/restau/" + newRestaukey, restauValues);
-        childUpdates.put("/user-restaus/" + restau.getUid() + "/" + newRestaukey, restauValues);
+        childUpdates.put("/" + FirebaseRef.RESTAU + "/" + newRestaukey, restauValues);
+        childUpdates.put("/" + FirebaseRef.USER_RESTAUS + "/" + restau.getUid() + "/" + newRestaukey, restauValues);
 
         mDatabase.updateChildren(childUpdates)
                 .addOnCompleteListener(mActivity, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        userSharedPreferences.edit().putBoolean(NewRestauFragment.RESTAU_CREATED, true).apply();
-                        userSharedPreferences.edit().putString(NewRestauFragment.RESTAU_TITLE, mRestauNameField.getText().toString()).apply();
-                        userSharedPreferences.edit().putString(NewRestauFragment.RESTAU_KEY, newRestaukey).apply();
-                        userSharedPreferences.edit().putBoolean(NewRestauFragment.FIRST_TIME_USER_RESTAU, false).apply();
+                        userSharedPreferences
+                                .edit()
+                                .putBoolean(NewRestauFragment.RESTAU_CREATED, true)
+                                .apply();
+
+                        userSharedPreferences
+                                .edit()
+                                .putString(NewRestauFragment.RESTAU_TITLE, mRestauNameField.getText().toString())
+                                .apply();
+
+                        userSharedPreferences
+                                .edit()
+                                .putString(NewRestauFragment.RESTAU_KEY, newRestaukey)
+                                .apply();
+
+                        userSharedPreferences
+                                .edit()
+                                .putBoolean(NewRestauFragment.FIRST_TIME_USER_RESTAU, false)
+                                .apply();
 
                         updateToolbarText(mRestauNameField.getText().toString());
 
                         final StorageReference imageRef = FirebaseStorage
                                 .getInstance()
                                 .getReference()
-                                .child("images")
-                                .child("restau")
+                                .child(FirebaseRef.IMAGES)
+                                .child(FirebaseRef.RESTAU)
                                 .child(newRestaukey);
 
                         newRestauImageView.setDrawingCacheEnabled(true);
@@ -254,11 +268,13 @@ public class NewRestauFragment extends Fragment {
 
                                 ((MainActivity) mActivity).oldTag = MainActivity.TAG_NEW_RESTAU_FRAGMENT;
 
-                                ((MainActivity) mActivity).hideAndShow(MainActivity.TAG_USER_RESTAU_FRAGMENT, new UserRestauFragment());
+                                ((MainActivity) mActivity)
+                                        .hideAndShow(MainActivity.TAG_USER_RESTAU_FRAGMENT, new UserRestauFragment());
 
                                 MainActivity.mDialog("", "Le Restaurant a bien été crée mais l'image associer n'a pas pu être envoiyer").show();
 
-                                final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE);
+                                final SweetAlertDialog sweetAlertDialog =
+                                        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE);
 
                                 new Handler().postDelayed(new Runnable() {
                                     @Override

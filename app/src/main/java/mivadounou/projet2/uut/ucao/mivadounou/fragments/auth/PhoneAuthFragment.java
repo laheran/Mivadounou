@@ -57,19 +57,15 @@ import mivadounou.projet2.uut.ucao.mivadounou.models.Restau;
 public class PhoneAuthFragment extends Fragment implements
         View.OnClickListener {
 
-    private OnFragmentInteractionListener mListener;
-
     private static final String TAG = "PhoneAuthActivity";
-
     private static final String KEY_VERIFY_IN_PROGRESS = "key_verify_in_progress";
-
     private static final int STATE_INITIALIZED = 1;
     private static final int STATE_CODE_SENT = 2;
     private static final int STATE_VERIFY_FAILED = 3;
     private static final int STATE_VERIFY_SUCCESS = 4;
     private static final int STATE_SIGNIN_FAILED = 5;
     private static final int STATE_SIGNIN_SUCCESS = 6;
-
+    private OnFragmentInteractionListener mListener;
     // [START declare_auth]
     private FirebaseAuth mAuth;
     // [END declare_auth]
@@ -96,12 +92,6 @@ public class PhoneAuthFragment extends Fragment implements
 
     private Activity mActivity;
 
-    private DatabaseReference databaseReference;
-
-    private SharedPreferences userSharedPreferences;
-
-    private ActionBar actionBar;
-
     public PhoneAuthFragment() {
         // Required empty public constructor
     }
@@ -121,8 +111,6 @@ public class PhoneAuthFragment extends Fragment implements
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
-
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         // Initialize phone auth callbacks
         // [START phone_auth_callbacks]
@@ -211,9 +199,6 @@ public class PhoneAuthFragment extends Fragment implements
         }
         mActivity = getActivity();
 
-        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
-        userSharedPreferences = mActivity.getPreferences(Context.MODE_PRIVATE);
     }
 
     @Override
@@ -573,12 +558,6 @@ public class PhoneAuthFragment extends Fragment implements
 
 //            mStatusText.setText(R.string.signed_in);
 //            mDetailText.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-        }
-    }
-
-    public void updateToolbarText(CharSequence text) {
-        if (actionBar != null) {
-            actionBar.setTitle(text);
         }
     }
 

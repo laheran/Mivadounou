@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,7 +45,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,6 +62,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         LatLng UCA = new LatLng(getLatitude(), getLongitude());
         mMap.addMarker(new MarkerOptions().position(UCA).title("YOUR TITLE")).showInfoWindow();
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UCA,17));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UCA, 17));
     }
 }

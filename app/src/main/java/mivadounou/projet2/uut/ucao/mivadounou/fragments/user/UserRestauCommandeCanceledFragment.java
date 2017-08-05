@@ -8,6 +8,7 @@ import com.google.firebase.database.Query;
 
 import mivadounou.projet2.uut.ucao.mivadounou.fragments.create.NewRestauFragment;
 import mivadounou.projet2.uut.ucao.mivadounou.models.CommandeMenu;
+import mivadounou.projet2.uut.ucao.mivadounou.other.FirebaseRef;
 
 /**
  * Created by leinad on 7/14/17.
@@ -20,7 +21,7 @@ public class UserRestauCommandeCanceledFragment extends UserRestauCommandeListFr
 
         SharedPreferences userSharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
 
-        return databaseReference.child("restau-commandes")
+        return databaseReference.child(FirebaseRef.RESTAU_COMMANDES)
                 .child(userSharedPreferences.getString(NewRestauFragment.RESTAU_KEY, ""))
                 .orderByChild("status")
                 .equalTo(CommandeMenu.COMMANDE_CANCELED);
